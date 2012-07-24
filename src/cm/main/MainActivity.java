@@ -263,12 +263,17 @@ public class MainActivity extends ListActivity {
 		
 		/*----------------------------
 		 * 1. Play
+		 * 		1. Recording?
+		 * 		2. Play
 			----------------------------*/
 		// Log
 		Log.d("MainActivity.java" + "["
 				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
 				+ "]", (String) lv.getItemAtPosition(position));
 		
+		/*----------------------------
+		 * 1.1. Recording?
+			----------------------------*/
 //		play_file((String) lv.getItemAtPosition(position));
 		
 		if (rec_mode == Methods.ButtonModes.REC) {
@@ -281,12 +286,19 @@ public class MainActivity extends ListActivity {
 			
 		}//if (rec_mode == Methods.ButtonModes.REC)
 		
+		/*----------------------------
+		 * 1.2. Play
+			----------------------------*/
 		Methods.playFile(this, (String) lv.getItemAtPosition(position));
 		
 		/*----------------------------
 		 * 2. Set modes
 			----------------------------*/
-		
+		MainActivity.play_mode = Methods.ButtonModes.PLAY;
+		MainActivity.pause_mode = Methods.ButtonModes.READY;
+		MainActivity.rec_mode = Methods.ButtonModes.FREEZE;
+
+		Methods.update_buttonImages(this);
 		
 		/*----------------------------
 		 * 3. super

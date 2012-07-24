@@ -64,7 +64,7 @@ public class ButtonOnClickListener implements OnClickListener {
 
 		//
 		switch (tag_name) {
-		case main_bt_play:
+		case main_bt_play://---------------------------------------------------------
 			
 			vib.vibrate(Methods.vibLength_click);
 			
@@ -110,17 +110,17 @@ public class ButtonOnClickListener implements OnClickListener {
 			}//if (MainActivity.pla)
 			
 			
-			break;
+			break;// case main_bt_play
 			
-		case main_bt_pause:
+		case main_bt_pause://-------------------------------------------------------------
 			
 			vib.vibrate(Methods.vibLength_click);
 			
 			
 			
-			break;
+			break;// case main_bt_pause
 			
-		case main_bt_rec:
+		case main_bt_rec://------------------------------------------------------------------
 			
 			vib.vibrate(Methods.vibLength_click);
 			
@@ -151,9 +151,9 @@ public class ButtonOnClickListener implements OnClickListener {
 			
 			}//switch (MainActivity.rec_mode)
 			
-			break;
+			break;// case main_bt_rec
 			
-		default:
+		default://----------------------------------------------------------------------------------
 			break;
 		}//switch (tag_name)
 	}

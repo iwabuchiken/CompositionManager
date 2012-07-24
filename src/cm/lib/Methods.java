@@ -644,9 +644,12 @@ public class Methods {
 		 * 2. If isPlaying => Stop
 			----------------------------*/
 		if (MainActivity.mp != null && MainActivity.mp.isPlaying()) {
-			MainActivity.mp.stop();
 			
-			MainActivity.mp.release();
+			stopPlayer();
+			
+//			MainActivity.mp.stop();
+//			
+//			MainActivity.mp.release();
 			
 //			try {
 //				MainActivity.mp.prepare();
@@ -758,5 +761,18 @@ public class Methods {
 				
 	}//public static void playFile(String itemAtPosition)
 
+	public static void  stopPlayer() {
+		/*----------------------------
+		 * Steps
+		 * 1.
+			----------------------------*/
+		if (MainActivity.mp != null && MainActivity.mp.isPlaying()) {
+			MainActivity.mp.stop();
+			
+			MainActivity.mp.release();
+
+		}//if (MainActivity.mp != null && MainActivity.mp.isPlaying())
+		
+	}//public static void  stopPlayer()
 	
 }//public class Methods
