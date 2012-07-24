@@ -644,8 +644,11 @@ public class Methods {
 		 * 2. If isPlaying => Stop
 			----------------------------*/
 		if (MainActivity.mp != null && MainActivity.mp.isPlaying()) {
+
+//			MainActivity.mp.
 			
-			stopPlayer();
+//			stopPlayer();
+			stopPlayer(actv);
 			
 //			MainActivity.mp.stop();
 //			
@@ -755,24 +758,54 @@ public class Methods {
 			// debug
 			Toast.makeText(actv, "Exception", 2000).show();
 			
-		}
+		}//try
 		
 		MainActivity.mp.start();
 				
 	}//public static void playFile(String itemAtPosition)
 
-	public static void  stopPlayer() {
+	public static void  stopPlayer(Activity actv) {
 		/*----------------------------
 		 * Steps
-		 * 1.
+		 * 1. Stop and release
+		 * 2. Prepare
 			----------------------------*/
 		if (MainActivity.mp != null && MainActivity.mp.isPlaying()) {
 			MainActivity.mp.stop();
 			
-			MainActivity.mp.release();
+//			MainActivity.mp.release();
 
 		}//if (MainActivity.mp != null && MainActivity.mp.isPlaying())
 		
+		/*----------------------------
+		 * 2. Prepare
+			----------------------------*/
+//		try {
+//
+//			MainActivity.mp.prepare();
+//			
+//		} catch (IllegalStateException e) {
+//			
+//			// Log
+//			Log.d("Methods.java" + "["
+//					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//					+ "]", "Exception: " + e.toString());
+//
+//			// debug
+//			Toast.makeText(actv, "Exception", 2000).show();
+//			
+//		} catch (IOException e) {
+//			
+//			// Log
+//			Log.d("Methods.java" + "["
+//					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//					+ "]", "Exception: " + e.toString());
+//
+//			// debug
+//			Toast.makeText(actv, "Exception", 2000).show();
+//			
+//		}//try
+
 	}//public static void  stopPlayer()
 	
 }//public class Methods

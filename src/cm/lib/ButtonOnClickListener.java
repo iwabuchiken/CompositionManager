@@ -107,6 +107,8 @@ public class ButtonOnClickListener implements OnClickListener {
 				
 				Methods.update_buttonImages(actv);
 				
+				Methods.stopPlayer(actv);
+				
 			}//if (MainActivity.pla)
 			
 			
