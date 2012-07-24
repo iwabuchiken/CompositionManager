@@ -70,7 +70,10 @@ public class Methods {
 	}//public static enum MoveMode
 
 	public static enum ButtonModes {
-		ON, OFF, STOP,
+		// Play
+		READY, FREEZE, PLAY,
+		// Rec
+		REC,
 	}
 	
 	//
@@ -560,31 +563,41 @@ public class Methods {
 	
 	public static void update_buttonImages(Activity actv) {
 		// Play
-		if (MainActivity.play_mode == Methods.ButtonModes.ON) {
+		if (MainActivity.play_mode == Methods.ButtonModes.READY) {
 			
 			MainActivity.ib_play.setEnabled(true);
 			
 			MainActivity.ib_play.setImageResource(R.drawable.cm_play_70x70_v3);
 			
-		} else if (MainActivity.play_mode == Methods.ButtonModes.OFF) {//if (play_mode == true)
+		} else if (MainActivity.play_mode == Methods.ButtonModes.FREEZE) {//if (play_mode == true)
 			
 			MainActivity.ib_play.setEnabled(false);
 			MainActivity.ib_play.setImageResource(R.drawable.cm_play_dis_70x70);
 			
-		} else if (MainActivity.play_mode == Methods.ButtonModes.STOP) {//if (play_mode == true)
+		} else if (MainActivity.play_mode == Methods.ButtonModes.PLAY) {//if (play_mode == true)
 			
-			MainActivity.ib_play.setEnabled(false);
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "MainActivity.play_mode == Methods.ButtonModes.PLAY");
+			
+			
+//			MainActivity.ib_play.setEnabled(false);
+			MainActivity.ib_play.setEnabled(true);
+			
+//			MainActivity.ib_pause.setImageResource(R.drawable.cm_stop_70x70);
+			MainActivity.ib_play.setImageResource(R.drawable.cm_stop_70x70);
 			
 		}//if (play_mode == true)
 		
 		// Pause
-		if (MainActivity.pause_mode == Methods.ButtonModes.ON) {
+		if (MainActivity.pause_mode == Methods.ButtonModes.READY) {
 			
 			MainActivity.ib_pause.setEnabled(true);
 			
 			MainActivity.ib_pause.setImageResource(R.drawable.cm_simple_pause_70x70);
 			
-		} else if (MainActivity.pause_mode == Methods.ButtonModes.OFF) {//if (pause_mode == true)
+		} else if (MainActivity.pause_mode == Methods.ButtonModes.FREEZE) {//if (pause_mode == true)
 			
 			MainActivity.ib_pause.setEnabled(false);
 			MainActivity.ib_pause.setImageResource(R.drawable.cm_pause_dis_70x70);
@@ -592,20 +605,22 @@ public class Methods {
 		}//if (pause_mode == true)
 		
 		// Rec
-		if (MainActivity.rec_mode == Methods.ButtonModes.ON) {
+		if (MainActivity.rec_mode == Methods.ButtonModes.READY) {
 			
 			MainActivity.ib_rec.setEnabled(true);
 			
 			MainActivity.ib_rec.setImageResource(R.drawable.cm_simple_rec_70x70);
 			
-		} else if (MainActivity.rec_mode == Methods.ButtonModes.OFF) {//if (MainActivity.rec_mode == true)
+		} else if (MainActivity.rec_mode == Methods.ButtonModes.FREEZE) {//if (MainActivity.rec_mode == true)
 			
 			MainActivity.ib_rec.setEnabled(false);
 			MainActivity.ib_rec.setImageResource(R.drawable.cm_simple_rec_70x70_dis);
 			
-		} else if (MainActivity.rec_mode == Methods.ButtonModes.STOP) {//if (MainActivity.rec_mode == true)
+		} else if (MainActivity.rec_mode == Methods.ButtonModes.REC) {//if (MainActivity.rec_mode == true)
 			
 			MainActivity.ib_rec.setEnabled(true);
+			
+			MainActivity.ib_rec.setImageResource(R.drawable.cm_stop_70x70);
 			
 		}//if (MainActivity.rec_mode == true)
 

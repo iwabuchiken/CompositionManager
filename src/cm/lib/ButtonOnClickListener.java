@@ -68,22 +68,28 @@ public class ButtonOnClickListener implements OnClickListener {
 			
 			vib.vibrate(Methods.vibLength_click);
 			
-			if (MainActivity.play_mode == Methods.ButtonModes.ON) {
+			if (MainActivity.play_mode == Methods.ButtonModes.READY) {
 
 				// Log
 				Log.d("ButtonOnClickListener.java"
 						+ "["
 						+ Thread.currentThread().getStackTrace()[2]
 								.getLineNumber() + "]", "MainActivity.play_mode: " + MainActivity.play_mode.name());
+
+				MainActivity.play_mode = Methods.ButtonModes.PLAY;
+				MainActivity.pause_mode = Methods.ButtonModes.READY;
+				MainActivity.rec_mode = Methods.ButtonModes.FREEZE;
+				
 
 //				MainActivity.play_mode = Methods.ButtonModes.OFF;
 //				MainActivity.pause_mode = true;
 //				MainActivity.rec_mode = false;
 //				
-//				Methods.update_buttonImages(actv);
+				Methods.update_buttonImages(actv);
 				
-			} else if (MainActivity.play_mode == Methods.ButtonModes.OFF) {//if (MainActivity.pla)
+			} else if (MainActivity.play_mode == Methods.ButtonModes.FREEZE) {//if (MainActivity.pla)
 
+				
 				// Log
 				Log.d("ButtonOnClickListener.java"
 						+ "["
@@ -91,11 +97,16 @@ public class ButtonOnClickListener implements OnClickListener {
 								.getLineNumber() + "]", "MainActivity.play_mode: " + MainActivity.play_mode.name());
 				
 				
-				MainActivity.play_mode = Methods.ButtonModes.ON;
-				MainActivity.pause_mode = Methods.ButtonModes.ON;
-				MainActivity.rec_mode = Methods.ButtonModes.OFF;
+//				Methods.update_buttonImages(actv);
+				
+			} else if (MainActivity.play_mode == Methods.ButtonModes.PLAY) {//if (MainActivity.pla)
+
+				MainActivity.play_mode = Methods.ButtonModes.READY;
+				MainActivity.pause_mode = Methods.ButtonModes.FREEZE;
+				MainActivity.rec_mode = Methods.ButtonModes.READY;
 				
 				Methods.update_buttonImages(actv);
+				
 			}//if (MainActivity.pla)
 			
 			
@@ -112,6 +123,33 @@ public class ButtonOnClickListener implements OnClickListener {
 		case main_bt_rec:
 			
 			vib.vibrate(Methods.vibLength_click);
+			
+			switch (MainActivity.rec_mode) {
+			case READY:
+				
+				MainActivity.play_mode = Methods.ButtonModes.FREEZE;
+				MainActivity.pause_mode = Methods.ButtonModes.READY;
+				MainActivity.rec_mode = Methods.ButtonModes.REC;
+				
+				Methods.update_buttonImages(actv);
+				
+				break;
+				
+			case FREEZE:
+				break;
+				
+			case REC:
+				
+				MainActivity.play_mode = Methods.ButtonModes.READY;
+				MainActivity.pause_mode = Methods.ButtonModes.FREEZE;
+				MainActivity.rec_mode = Methods.ButtonModes.READY;
+				
+				Methods.update_buttonImages(actv);
+				
+				break;
+			
+			
+			}//switch (MainActivity.rec_mode)
 			
 			break;
 			

@@ -10,10 +10,10 @@ import android.widget.ImageButton;
 
 public class MainActivity extends Activity {
 	
-	//
-	public static Methods.ButtonModes play_mode = Methods.ButtonModes.OFF;
-	public static Methods.ButtonModes pause_mode = Methods.ButtonModes.OFF;
-	public static Methods.ButtonModes rec_mode = Methods.ButtonModes.OFF;
+	// Buttons => Initial states
+	public static Methods.ButtonModes play_mode = Methods.ButtonModes.READY;
+	public static Methods.ButtonModes pause_mode = Methods.ButtonModes.FREEZE;
+	public static Methods.ButtonModes rec_mode = Methods.ButtonModes.READY;
 
 	//
 	public static ImageButton ib_play;
@@ -76,7 +76,8 @@ public class MainActivity extends Activity {
 
 		// Pause
 		ib_pause.setEnabled(false);
-		ib_pause.setImageResource(R.drawable.cm_simple_pause_70x70);
+//		ib_pause.setImageResource(R.drawable.cm_simple_pause_70x70);
+		ib_pause.setImageResource(R.drawable.cm_pause_dis_70x70);
 
 		// Rec
 		ib_rec.setEnabled(true);

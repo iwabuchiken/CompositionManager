@@ -36,7 +36,8 @@ public final class R {
         public static final int cm_simple_pause_70x70=0x7f020007;
         public static final int cm_simple_rec_70x70=0x7f020008;
         public static final int cm_simple_rec_70x70_dis=0x7f020009;
-        public static final int ic_launcher=0x7f02000a;
+        public static final int cm_stop_70x70=0x7f02000a;
+        public static final int ic_launcher=0x7f02000b;
     }
     public static final class id {
         public static final int main_iv_pause=0x7f060003;
