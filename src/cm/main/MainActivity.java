@@ -3,7 +3,10 @@ package cm.main;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 import cm.lib.ButtonOnClickListener;
 import cm.lib.ButtonOnTouchListener;
@@ -19,7 +22,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class MainActivity extends ListActivity {
 	
@@ -32,6 +38,10 @@ public class MainActivity extends ListActivity {
 	public static ImageButton ib_play;
 	public static ImageButton ib_pause;
 	public static ImageButton ib_rec;
+	
+	public static SeekBar sb;
+	
+	public static TextView tv_progress;
 
 	//
 	public static String  rootDir;
@@ -39,6 +49,12 @@ public class MainActivity extends ListActivity {
 	public static MediaPlayer mp = null;
 
 	public static MediaRecorder mr = null;
+
+	//
+	public static String currentFileName = null;
+
+	//
+	public static String targetFolder;
 	
     /** Called when the activity is first created. */
     @Override
@@ -67,6 +83,7 @@ public class MainActivity extends ListActivity {
 		 * 1. Listeners
 		 * 2. Set list view
 		 * 3. MediaPlayer
+		 * 4. SeekBar
 			----------------------------*/
 		
 		set_listeners();
@@ -97,7 +114,8 @@ public class MainActivity extends ListActivity {
 		/*----------------------------
 		 * 2. Get file list
 			----------------------------*/
-		String targetFolder = "tapeatalk_records";
+//		String targetFolder = "tapeatalk_records";
+		targetFolder = "tapeatalk_records";
 		
 //		String  rootDir = new File(
 		rootDir = new File(
@@ -140,6 +158,8 @@ public class MainActivity extends ListActivity {
 		 * Steps
 		 * 1. Touch
 		 * 2. Click
+		 * 
+		 * 3. SeekBar
 			----------------------------*/
 		/*----------------------------
 		 * 1. Touch
@@ -170,6 +190,42 @@ public class MainActivity extends ListActivity {
 		ib_play.setOnClickListener(new ButtonOnClickListener(this));
 		ib_pause.setOnClickListener(new ButtonOnClickListener(this));
 		ib_rec.setOnClickListener(new ButtonOnClickListener(this));
+		
+		/*----------------------------
+		 * 3. SeekBar
+			----------------------------*/
+		tv_progress = (TextView) findViewById(R.id.main_tv_progress);
+		
+		sb = (SeekBar) findViewById(R.id.main_sb);
+		
+		
+		
+		sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				// TODO 自動生成されたメソッド・スタブ
+				
+				tv_progress.setText(String.valueOf(progress));
+				
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO 自動生成されたメソッド・スタブ
+				
+			}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO 自動生成されたメソッド・スタブ
+				
+			}
+
+				
+		});//sb.setOnSeekBarChangeListener
+
 		
 	}//private void set_listeners()
 
@@ -256,7 +312,10 @@ public class MainActivity extends ListActivity {
 		 * Steps
 		 * 1. Play
 		 * 2. Set modes
-		 * 3. super
+		 * 3. Set file path to view
+		 * 4. Set file duration to progress view
+		 * 		=> Methods.playFile()
+		 * 9. super
 			----------------------------*/
 		
 //		super.onListItemClick(lv, v, position, id);
@@ -289,7 +348,11 @@ public class MainActivity extends ListActivity {
 		/*----------------------------
 		 * 1.2. Play
 			----------------------------*/
-		Methods.playFile(this, (String) lv.getItemAtPosition(position));
+//		String currentFileName = (String) lv.getItemAtPosition(position);
+		currentFileName = (String) lv.getItemAtPosition(position);
+		
+//		Methods.playFile(this, (String) lv.getItemAtPosition(position));
+		Methods.playFile(this, currentFileName);
 		
 		/*----------------------------
 		 * 2. Set modes
@@ -301,12 +364,69 @@ public class MainActivity extends ListActivity {
 		Methods.update_buttonImages(this);
 		
 		/*----------------------------
-		 * 3. super
+		 * 3. Set file path to view
+			----------------------------*/
+		TextView tv = (TextView) findViewById(R.id.main_tv);
+		
+		String fileFullPath = new File(rootDir, currentFileName).getAbsolutePath();
+		
+		String[] a_fileFullPath = fileFullPath.split(new File("aaa").separator);
+		
+		int index = Methods.findIndexFromArray(a_fileFullPath, targetFolder);
+		
+		String[] sub_a_fileFullPath = Arrays.copyOfRange(a_fileFullPath, index, a_fileFullPath.length);
+		
+		String pathForTextView = StringUtils.join(sub_a_fileFullPath, "/");
+		
+		// Log
+		Log.d("MainActivity.java" + "["
+				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+				+ "]", "pathForTextView: " + pathForTextView);
+		
+		
+//		tv.setText(new File(rootDir, currentFileName).getAbsolutePath());
+		tv.setText(pathForTextView);
+		
+		/*----------------------------
+		 * 4. Set file duration to progress view
+			----------------------------*/
+		
+		
+		
+		/*----------------------------
+		 * 9. super
 			----------------------------*/
 		super.onListItemClick(lv, v, position, id);
 		
 	}//protected void onListItemClick(ListView l, View v, int position, long id)
 
+	class ProgressThread extends Thread {
+		
+		public ProgressThread(Activity actv) {
+			
+		}
+
+		@Override
+		public void run() {
+			// TODO 自動生成されたメソッド・スタブ
+			super.run();
+		}
+
+		@Override
+		public synchronized void start() {
+			// TODO 自動生成されたメソッド・スタブ
+//			super.start();
+			
+			
+			
+			
+		}//public synchronized void start()
+		
+		
+		
+	}//class ProgressThread extends Thread
+	
+	
 //	private void play_file(String fileName) {
 //		/*----------------------------
 //		 * Steps
@@ -355,3 +475,4 @@ public class MainActivity extends ListActivity {
 //	}//private void play_file(String fileName)
 	
 }//public class MainActivity extends ListActivity
+

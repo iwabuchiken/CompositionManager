@@ -691,11 +691,22 @@ public class Methods {
 		
 		/*----------------------------
 		 * 3. Play
+		 * 		1. MediaPlayer
+		 * 		2. Set data source
+		 * 		3. Prepare mp
+		 * 		4. Start
+		 * 		5. Set duration to the view
 			----------------------------*/
 //		MainActivity.mp.release();
 		
+		/*----------------------------
+		 * 3.1. MediaPlayer
+			----------------------------*/
 		MainActivity.mp = new MediaPlayer();
 		
+		/*----------------------------
+		 * 3.2. Set data source
+			----------------------------*/
 		try {
 			MainActivity.mp.setDataSource(filePath);
 			
@@ -734,6 +745,9 @@ public class Methods {
 			
 		}//try
 		
+		/*----------------------------
+		 * 3.3. Prepare mp
+			----------------------------*/
 		try {
 
 			MainActivity.mp.prepare();
@@ -760,8 +774,25 @@ public class Methods {
 			
 		}//try
 		
+		/*----------------------------
+		 * 3.4. Start
+			----------------------------*/
 		MainActivity.mp.start();
 				
+		/*----------------------------
+		 * 3.5. Set duration to the view
+			----------------------------*/
+		// Log
+		Log.d("Methods.java" + "["
+				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+				+ "]", "Duration: " + String.valueOf(MainActivity.mp.getDuration()));
+		
+		//
+		TextView tv_progress = (TextView) actv.findViewById(R.id.main_tv_progress);
+		
+		tv_progress.setText(
+						convert_millSeconds2digitsLabel(MainActivity.mp.getDuration()));
+		
 	}//public static void playFile(String itemAtPosition)
 
 	public static void  stopPlayer(Activity actv) {
@@ -807,5 +838,49 @@ public class Methods {
 //		}//try
 
 	}//public static void  stopPlayer()
-	
+
+	public static String  convert_millSeconds2digitsLabel(long millSeconds) {
+		/*----------------------------
+		 * Steps
+		 * 1. Prepare variables
+		 * 2. Build a string
+		 * 3. Return
+			----------------------------*/
+		/*----------------------------
+		 * 1. Prepare variables
+			----------------------------*/
+		int seconds = (int)(millSeconds / 1000);
+		
+		int minutes = seconds / 60;
+		
+		int digit_seconds = seconds % 60;
+		
+		/*----------------------------
+		 * 2. Build a string
+			----------------------------*/
+		StringBuilder sb = new StringBuilder();
+		
+		if (String.valueOf(minutes).length() < 2) {
+			
+			sb.append("0");
+			
+		}//if (String.valueOf(minutes).length() < 2)
+		
+		sb.append(String.valueOf(minutes));
+		sb.append(":");
+
+		if (String.valueOf(digit_seconds).length() < 2) {
+			
+			sb.append("0");
+			
+		}//if (String.valueOf(digit_seconds).length() < 2)
+
+		sb.append(String.valueOf(digit_seconds));
+		
+		/*----------------------------
+		 * 3. Return
+			----------------------------*/
+		return sb.toString();
+		
+	}//public static void  convert_millSeconds2digitsLabel()
 }//public class Methods

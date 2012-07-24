@@ -85,7 +85,24 @@ public class ButtonOnClickListener implements OnClickListener {
 //				MainActivity.pause_mode = true;
 //				MainActivity.rec_mode = false;
 //				
+//				Methods.update_buttonImages(actv);
+				
+				if (MainActivity.currentFileName != null) {
+					
+					Methods.playFile(actv, MainActivity.currentFileName);
+					
+				} else {//if (MainActivity.currentFileName != null)
+					
+					// debug
+					Toast.makeText(actv, "ファイルはまだ選ばれてません", 2000).show();
+					
+					break;
+					
+				}//if (MainActivity.currentFileName != null)
+				
 				Methods.update_buttonImages(actv);
+				
+//				Methods.playFile(actv, MainActivity.currentFileName);
 				
 			} else if (MainActivity.play_mode == Methods.ButtonModes.FREEZE) {//if (MainActivity.pla)
 
