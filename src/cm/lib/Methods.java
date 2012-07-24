@@ -787,11 +787,14 @@ public class Methods {
 				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
 				+ "]", "Duration: " + String.valueOf(MainActivity.mp.getDuration()));
 		
-		//
-		TextView tv_progress = (TextView) actv.findViewById(R.id.main_tv_progress);
+		//debug
+		MainActivity.test1_setProgress2TextView();
 		
-		tv_progress.setText(
-						convert_millSeconds2digitsLabel(MainActivity.mp.getDuration()));
+//		//
+//		TextView tv_progress = (TextView) actv.findViewById(R.id.main_tv_progress);
+//		
+//		tv_progress.setText(
+//						convert_millSeconds2digitsLabel(MainActivity.mp.getDuration()));
 		
 	}//public static void playFile(String itemAtPosition)
 
@@ -799,6 +802,7 @@ public class Methods {
 		/*----------------------------
 		 * Steps
 		 * 1. Stop and release
+		 * 1-2. Stop timer
 		 * 2. Prepare
 			----------------------------*/
 		if (MainActivity.mp != null && MainActivity.mp.isPlaying()) {
@@ -807,6 +811,13 @@ public class Methods {
 //			MainActivity.mp.release();
 
 		}//if (MainActivity.mp != null && MainActivity.mp.isPlaying())
+		
+		/*----------------------------
+		 * 1-2. Stop timer
+			----------------------------*/
+		MainActivity.timer.cancel();
+		
+		MainActivity.timer = null;
 		
 		/*----------------------------
 		 * 2. Prepare

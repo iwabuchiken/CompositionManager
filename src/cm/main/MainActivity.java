@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -55,6 +57,11 @@ public class MainActivity extends ListActivity {
 
 	//
 	public static String targetFolder;
+
+	//
+	static int max = 5;	// Used => test1_setProgress2TextView()
+	static int counter = 0;
+	public static Timer timer;
 	
     /** Called when the activity is first created. */
     @Override
@@ -98,6 +105,12 @@ public class MainActivity extends ListActivity {
 			----------------------------*/
 		mp = new MediaPlayer();
 		
+		//debug
+//		test1_setProgress2TextView();
+		
+//		ProgressThread pt = new ProgressThread(this);
+//		
+//		pt.start();
 		
 	}//private void initial_setup()
 
@@ -410,12 +423,37 @@ public class MainActivity extends ListActivity {
 		public void run() {
 			// TODO 自動生成されたメソッド・スタブ
 			super.run();
-		}
+			
+			int max = 5;
+			
+			int counter = 0;
+			
+			while (counter < max) {
+				
+				MainActivity.setValue(counter);
+				
+				counter += 1;
+				
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					
+					// Log
+					Log.d("MainActivity.java"
+							+ "["
+							+ Thread.currentThread().getStackTrace()[2]
+									.getLineNumber() + "]", "Exception: " + e.toString());
+					
+				}//try
+				
+			}//while (counter < max)
+			
+		}//public void run()
 
 		@Override
 		public synchronized void start() {
 			// TODO 自動生成されたメソッド・スタブ
-//			super.start();
+			super.start();
 			
 			
 			
@@ -473,6 +511,65 @@ public class MainActivity extends ListActivity {
 //		}//try
 //		
 //	}//private void play_file(String fileName)
+
+	public static void setValue(int value) {
+		
+		if (tv_progress != null) {
+			
+			tv_progress.setText(String.valueOf(value));
+			
+		} else {//if (tv_progress != null)
+			
+//			tv_progress = (TextView) MainActivity.this.findViewById(R.id.main_tv_progress);
+			
+		}//if (tv_progress != null)
+		
+//		tv_progress.setText(String.valueOf(value));
+		
+	}
 	
+	public static void test1_setProgress2TextView() {
+		
+		max = mp.getDuration() / 1000;
+		
+		timer = new Timer();
+		
+		final android.os.Handler handler = new android.os.Handler();
+		
+//		final int counter = 0;
+//		final int max = 10;
+		
+		timer.schedule(
+			new TimerTask(){
+
+				@Override
+				public void run() {
+					handler.post(new Runnable(){
+
+						@Override
+						public void run() {
+							
+							if (counter < max) {
+								
+								
+								MainActivity.setValue(counter);
+
+								counter += 1;
+								
+							}//if (counter < max)
+							
+						}//public void run() // Runnable
+						
+					});
+				
+				}//public void run()  // 
+				
+			}, //new TimerTask()
+			0, 
+			1000
+		);//timer.schedule(new TimerTask()
+		
+		
+	}//public static void test1_setProgress2TextView()
 }//public class MainActivity extends ListActivity
 
