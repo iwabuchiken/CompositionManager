@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -627,4 +628,135 @@ public class Methods {
 		
 	}//public static void update_buttonImages(Activity actv)
 
+	
+	public static void playFile(Activity actv, String fileName) {
+		/*----------------------------
+		 * Steps
+		 * 1. Get file path
+		 * 2. If isPlaying => Stop
+		 * 3. Play
+		 * 
+			----------------------------*/
+		String filePath = new File(MainActivity.rootDir, fileName).getAbsolutePath();
+		
+		
+		/*----------------------------
+		 * 2. If isPlaying => Stop
+			----------------------------*/
+		if (MainActivity.mp != null && MainActivity.mp.isPlaying()) {
+			MainActivity.mp.stop();
+			
+			MainActivity.mp.release();
+			
+//			try {
+//				MainActivity.mp.prepare();
+//				
+//				// Log
+//				Log.d("Methods.java"
+//						+ "["
+//						+ Thread.currentThread().getStackTrace()[2]
+//								.getLineNumber() + "]", "mp => Prepared");
+//				
+//				
+//			} catch (IllegalStateException e) {
+//				// Log
+//				Log.d("Methods.java" + "["
+//						+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//						+ "]", "Exception => " + e.toString());
+//				
+//				// debug
+//				Toast.makeText(actv, "Exception => " + e.toString(), 2000).show();
+//
+//				return;
+//				
+//			} catch (IOException e) {
+//				// Log
+//				Log.d("Methods.java" + "["
+//						+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//						+ "]", "Exception => " + e.toString());
+//				
+//				// debug
+//				Toast.makeText(actv, "Exception => " + e.toString(), 2000).show();
+//				
+//				return;
+//				
+//			}//try
+		}//if (mp.isPlaying())
+		
+		/*----------------------------
+		 * 3. Play
+			----------------------------*/
+//		MainActivity.mp.release();
+		
+		MainActivity.mp = new MediaPlayer();
+		
+		try {
+			MainActivity.mp.setDataSource(filePath);
+			
+//			MainActivity.mp.prepare();
+//			
+//			MainActivity.mp.start();
+//			
+		} catch (IllegalArgumentException e) {
+			
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "Exception: " + e.toString());
+			
+			// debug
+			Toast.makeText(actv, "Exception", 2000).show();
+			
+		} catch (IllegalStateException e) {
+			
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "Exception: " + e.toString());
+
+			// debug
+			Toast.makeText(actv, "Exception", 2000).show();
+			
+		} catch (IOException e) {
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "Exception: " + e.toString());
+
+			// debug
+			Toast.makeText(actv, "Exception", 2000).show();
+			
+		}//try
+		
+		try {
+
+			MainActivity.mp.prepare();
+			
+		} catch (IllegalStateException e) {
+			
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "Exception: " + e.toString());
+
+			// debug
+			Toast.makeText(actv, "Exception", 2000).show();
+			
+		} catch (IOException e) {
+			
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "Exception: " + e.toString());
+
+			// debug
+			Toast.makeText(actv, "Exception", 2000).show();
+			
+		}
+		
+		MainActivity.mp.start();
+				
+	}//public static void playFile(String itemAtPosition)
+
+	
 }//public class Methods

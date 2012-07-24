@@ -1,14 +1,27 @@
 package cm.main;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import cm.lib.ButtonOnClickListener;
 import cm.lib.ButtonOnTouchListener;
 import cm.lib.Methods;
 import android.app.Activity;
+import android.app.ListActivity;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ListActivity {
 	
 	// Buttons => Initial states
 	public static Methods.ButtonModes play_mode = Methods.ButtonModes.READY;
@@ -19,6 +32,13 @@ public class MainActivity extends Activity {
 	public static ImageButton ib_play;
 	public static ImageButton ib_pause;
 	public static ImageButton ib_rec;
+
+	//
+	public static String  rootDir;
+	
+	public static MediaPlayer mp = null;
+
+	public static MediaRecorder mr = null;
 	
     /** Called when the activity is first created. */
     @Override
@@ -26,9 +46,94 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        set_listeners();
+        
+        initial_setup();
+        
+//        set_listeners();
+        
+//        //debug
+//        // Log
+//		Log.d("MainActivity.java" + "["
+//				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//				+ "]", Environment.getExternalStorageDirectory().getAbsolutePath());
+		
+        
         
     }//public void onCreate(Bundle savedInstanceState)
+
+	private void initial_setup() {
+		/*----------------------------
+		 * Steps
+		 * 1. Listeners
+		 * 2. Set list view
+		 * 3. MediaPlayer
+			----------------------------*/
+		
+		set_listeners();
+		
+		/*----------------------------
+		 * 2. Set list view
+			----------------------------*/
+		set_listview();
+		
+		/*----------------------------
+		 * 3. MediaPlayer
+			----------------------------*/
+		mp = new MediaPlayer();
+		
+		
+	}//private void initial_setup()
+
+	private void set_listview() {
+		/*----------------------------
+		 * Steps
+		 * 1. Get view
+		 * 2. Get file list
+		 * 3. Adapter
+		 * 4. Set adapter
+			----------------------------*/
+//		ListView lv = this.getListView();
+		
+		/*----------------------------
+		 * 2. Get file list
+			----------------------------*/
+		String targetFolder = "tapeatalk_records";
+		
+//		String  rootDir = new File(
+		rootDir = new File(
+						Environment.getExternalStorageDirectory().getAbsolutePath(), 
+						targetFolder)
+					.getAbsolutePath();
+		
+		File[] files = new File(rootDir).listFiles();
+		
+		List<String> file_names = new ArrayList<String>();
+		
+		for (File file : files) {
+			
+			file_names.add(file.getName());
+			
+		}//for (File file : files)
+		
+		
+		/*----------------------------
+		 * 3. Adapter
+			----------------------------*/
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+								this,
+								android.R.layout.simple_list_item_1,
+								file_names
+								);
+		
+		/*----------------------------
+		 * 4. Set adapter
+			----------------------------*/
+//		lv.setAdapter(adapter);
+//		setAdapter(adapter);
+		setListAdapter(adapter);
+		
+		
+	}//private void set_listview()
 
 	private void set_listeners() {
 		/*----------------------------
@@ -144,4 +249,97 @@ public class MainActivity extends Activity {
 		
 		
 	}
-}
+
+	@Override
+	protected void onListItemClick(ListView lv, View v, int position, long id) {
+		/*----------------------------
+		 * Steps
+		 * 1. Play
+		 * 2. Set modes
+		 * 3. super
+			----------------------------*/
+		
+//		super.onListItemClick(lv, v, position, id);
+		
+		/*----------------------------
+		 * 1. Play
+			----------------------------*/
+		// Log
+		Log.d("MainActivity.java" + "["
+				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+				+ "]", (String) lv.getItemAtPosition(position));
+		
+//		play_file((String) lv.getItemAtPosition(position));
+		
+		if (rec_mode == Methods.ButtonModes.REC) {
+			
+			// debug
+			Toast.makeText(MainActivity.this, 
+					"ò^âπíÜÇ≈Ç∑ÅBçƒê∂ÇÕÇµÇ»Ç¢ÇÊÇ§Ç…ê›íËÇ≥ÇÍÇƒÇ‹Ç∑", 2000).show();
+			
+			return;
+			
+		}//if (rec_mode == Methods.ButtonModes.REC)
+		
+		Methods.playFile(this, (String) lv.getItemAtPosition(position));
+		
+		/*----------------------------
+		 * 2. Set modes
+			----------------------------*/
+		
+		
+		/*----------------------------
+		 * 3. super
+			----------------------------*/
+		super.onListItemClick(lv, v, position, id);
+		
+	}//protected void onListItemClick(ListView l, View v, int position, long id)
+
+//	private void play_file(String fileName) {
+//		/*----------------------------
+//		 * Steps
+//		 * 1.
+//			----------------------------*/
+//		String filePath = new File(rootDir, fileName).getAbsolutePath();
+//		
+//		try {
+//			mp.setDataSource(filePath);
+//			
+//			mp.prepare();
+//			
+//			mp.start();
+//			
+//		} catch (IllegalArgumentException e) {
+//			
+//			// Log
+//			Log.d("MainActivity.java" + "["
+//					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//					+ "]", "Exception: " + e.toString());
+//			
+//			// debug
+//			Toast.makeText(MainActivity.this, "Exception", 2000).show();
+//			
+//		} catch (IllegalStateException e) {
+//			
+//			// Log
+//			Log.d("MainActivity.java" + "["
+//					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//					+ "]", "Exception: " + e.toString());
+//
+//			// debug
+//			Toast.makeText(MainActivity.this, "Exception", 2000).show();
+//			
+//		} catch (IOException e) {
+//			// Log
+//			Log.d("MainActivity.java" + "["
+//					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//					+ "]", "Exception: " + e.toString());
+//
+//			// debug
+//			Toast.makeText(MainActivity.this, "Exception", 2000).show();
+//			
+//		}//try
+//		
+//	}//private void play_file(String fileName)
+	
+}//public class MainActivity extends ListActivity
