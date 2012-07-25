@@ -9,8 +9,12 @@ public class FileItem {
 	long date_added;
 	long date_modified;
 	
+	long duration;
+	
 	String file_info;
 	String memos;
+
+	String located_at;
 	
 	/****************************************
 	 * Constructors
@@ -27,6 +31,8 @@ public class FileItem {
 		
 		this.date_added = date_added; 
 		this.date_modified = date_modified;
+		
+		this.duration = duration;
 		
 		this.file_info = file_info; 
 		this.memos = memos;
@@ -68,6 +74,14 @@ public class FileItem {
 
 	public String getMemos() {
 		return memos;
+	}
+
+	public long getDuration() {
+		return duration;
+	}
+
+	public String getLocated_at() {
+		return located_at;
 	}
 	
 }//public class FileItem

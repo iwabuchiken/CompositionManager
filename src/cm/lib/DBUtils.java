@@ -60,8 +60,8 @@ public class DBUtils extends SQLiteOpenHelper{
 	};
 	
 	public static final String[] types_main_table = {
-//		"TEXT", "TEXT", 
-		"TEXT UNIQUE", "TEXT",
+		"TEXT", "TEXT", 
+//		"TEXT UNIQUE", "TEXT",
 		"INTEGER", 
 		"INTEGER", "INTEGER",
 		"TEXT", "TEXT",
@@ -378,6 +378,67 @@ public class DBUtils extends SQLiteOpenHelper{
 		}//try
 	}//public insertData(String tableName, String[] columnNames, String[] values)
 
+	public boolean insertData(SQLiteDatabase db, String tableName, 
+			String[] columnNames, Object[] values) {
+		/*----------------------------
+		* 1. Insert data
+		----------------------------*/
+		try {
+			// Start transaction
+			db.beginTransaction();
+			
+			// ContentValues
+			ContentValues val = new ContentValues();
+			
+			// Put values
+			val.put(columnNames[0], (String) values[0]);		// file_name
+			val.put(columnNames[1], (String) values[1]);		// file_path
+			
+			val.put(columnNames[2], (Long) values[2]);		// duration
+			
+			val.put(columnNames[3], (Long) values[3]);		// date_added
+			val.put(columnNames[4], (Long) values[4]);		// date_modified
+			
+			val.put(columnNames[5], (String) values[5]);		// file_info
+			val.put(columnNames[6], (String) values[6]);		// memos
+			
+			val.put(columnNames[7], (String) values[7]);		// located_at
+			
+//			for (int i = 0; i < columnNames.length; i++) {
+//			val.put(columnNames[i], values[i]);
+//			}//for (int i = 0; i < columnNames.length; i++)
+			
+			// Insert data
+			db.insert(tableName, null, val);
+			
+			// Set as successful
+			db.setTransactionSuccessful();
+			
+			// End transaction
+			db.endTransaction();
+			
+			// Log
+			Log.d("DBUtils.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "Transaction => Ends");
+			
+			
+			return true;
+		
+		} catch (Exception e) {
+			// Log
+			Log.e("DBUtils.java" + "["
+			+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+			+ "]", "Exception! => " + e.toString());
+			
+			return false;
+		}//try
+		
+		////debug
+		//return false;
+		
+	}//public insertData(String tableName, String[] columnNames, String[] values)
+	
 	public boolean deleteData(Activity actv, SQLiteDatabase db, String tableName, long file_id) {
 		/*----------------------------
 		 * Steps
@@ -475,5 +536,19 @@ public class DBUtils extends SQLiteOpenHelper{
 //		return false;
 		
 	}//public boolean isInDB_long(SQLiteDatabase db, String tableName, long file_id)
+
+	public static boolean isInTable(Activity actv, SQLiteDatabase db, 
+											String tableName, String colName, String value) {
+		
+		String sql = "SELECT * FROM " + tableName + " WHERE " + colName + " = '" + value + "'";
+		
+		Cursor c = db.rawQuery(sql, null);
+		
+		actv.startManagingCursor(c);
+		
+		return c.getCount() > 0 ? true : false;
+		
+	}//public static boolean isInTable
+
 }//public class DBUtils
 

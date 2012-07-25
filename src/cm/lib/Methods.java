@@ -1016,6 +1016,19 @@ public class Methods {
 		//
 		SQLiteDatabase wdb = dbu.getWritableDatabase();
 		
+//		//debug
+//		String sql = "SELECT * FROM " + DBUtils.mainTableName;
+//		
+//		Cursor c = wdb.rawQuery(sql, null);
+//		
+//		actv.startManagingCursor(c);
+//		
+//		// Log
+//		Log.d("Methods.java" + "["
+//				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//				+ "]", "c.getCount() => " + c.getCount());
+		
+		
 		/*----------------------------
 		 * 2. Table exists?
 		 * 2-1. If no, then create one
@@ -1095,12 +1108,25 @@ public class Methods {
 				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
 				+ "]", "fileItems.size(): " + fileItems.size());
 		
+		int counter = 0;
 		
 		for (FileItem fileItem : fileItems) {
 			
-			storeFileItem2DB(wdb, dbu, DBUtils.mainTableName, fileItem);
+			res = storeFileItem2DB(actv, wdb, dbu, DBUtils.mainTableName, fileItem);
+		
+			if (res == false) {
+				
+				counter += 1;
+				
+			}//if (res == false)
 			
-		}
+		}//for (FileItem fileItem : fileItems)
+		
+		// Log
+		Log.d("Methods.java" + "["
+				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+				+ "]", "counter: " + counter + " / " + "File items: " + fileItems.size());
+		
 		
 		/*----------------------------
 		 * 9. Close db
@@ -1110,20 +1136,103 @@ public class Methods {
 		/*----------------------------
 		 * 10. Return
 			----------------------------*/
-		return true;
+		if (counter > 0) {
+
+			return false;
+			
+		} else {//if (counter != 0)
+			
+			return true;
+			
+		}//if (counter != 0)
+		
+//		return true;
 		
 	}//public static boolean refreshMainDB(Activity actv)
 
-	private static void storeFileItem2DB(SQLiteDatabase wdb, DBUtils dbu,
-			String tableName, FileItem fileItem) {
+	
+	/****************************************
+	 * storeFileItem2DB()
+	 * 
+	 * <Caller> 
+	 * 1.  refreshMainDB(Activity actv)
+	 * 
+	 * <Desc> 1. <Params> 1.
+	 * 
+	 * <Return> 1.
+	 * 
+	 * <Steps> 1.
+	 ****************************************/
+	private static boolean storeFileItem2DB(Activity actv, SQLiteDatabase wdb, 
+										DBUtils dbu, String tableName, FileItem fileItem) {
 		/*----------------------------
 		 * Steps
-		 * 
+		 * 1. Is the item already in the table?
+		 * 2. If not, insert data
 			----------------------------*/
+		/*----------------------------
+		 * 1. Is the item already in the table?
+			----------------------------*/
+		boolean res = DBUtils.isInTable(
+							actv, wdb, tableName, DBUtils.cols_main_table[0], fileItem.getFile_name());
+		
+		// If the item is in the table, the return will be true, thus this method itself
+		//	returns false.
+		if (res == true) {
+			
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "res == true: " + fileItem.getFile_name());
+			
+			return false;
+			
+		}//if (res == false)
 		
 		
+		/*----------------------------
+		 * 2. If not, insert data
+			----------------------------*/
+		Object[] values = {
+				
+				fileItem.getFile_name(),
+				fileItem.getFile_path(),
+				
+				fileItem.getDuration(),
+				
+				fileItem.getDate_added(),
+				fileItem.getDate_modified(),
+				
+				fileItem.getFile_info(),
+				fileItem.getMemos(),
+				
+				fileItem.getLocated_at()
+		};
 		
-	}//private static void storeFileItem2DB
+		res = dbu.insertData(wdb, tableName, DBUtils.cols_main_table, values);
+		
+		if (res == false) {
+			
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "Insert into db failed: " + fileItem.getFile_name());
+			
+			return false;
+			
+		} else {//if (res == false)
+
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "Data inserted: " + fileItem.getFile_name());
+			
+			return true;
+			
+		}//if (res == false)
+		
+		
+	}//private static boolean storeFileItem2DB
 
 	private static List<FileItem> prepare_FileItemList(SQLiteDatabase wdb) {
 		File[] files = new File(MainActivity.rootDir).listFiles();
