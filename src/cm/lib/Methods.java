@@ -648,48 +648,8 @@ public class Methods {
 			----------------------------*/
 		if (MainActivity.mp != null && MainActivity.mp.isPlaying()) {
 
-//			MainActivity.mp.
-			
-//			stopPlayer();
 			stopPlayer(actv);
 			
-//			MainActivity.mp.stop();
-//			
-//			MainActivity.mp.release();
-			
-//			try {
-//				MainActivity.mp.prepare();
-//				
-//				// Log
-//				Log.d("Methods.java"
-//						+ "["
-//						+ Thread.currentThread().getStackTrace()[2]
-//								.getLineNumber() + "]", "mp => Prepared");
-//				
-//				
-//			} catch (IllegalStateException e) {
-//				// Log
-//				Log.d("Methods.java" + "["
-//						+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-//						+ "]", "Exception => " + e.toString());
-//				
-//				// debug
-//				Toast.makeText(actv, "Exception => " + e.toString(), 2000).show();
-//
-//				return;
-//				
-//			} catch (IOException e) {
-//				// Log
-//				Log.d("Methods.java" + "["
-//						+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-//						+ "]", "Exception => " + e.toString());
-//				
-//				// debug
-//				Toast.makeText(actv, "Exception => " + e.toString(), 2000).show();
-//				
-//				return;
-//				
-//			}//try
 		}//if (mp.isPlaying())
 		
 		/*----------------------------
@@ -709,30 +669,14 @@ public class Methods {
 		
 		MainActivity.mp.setOnCompletionListener(
 							new Methods().new MPOnCompletionListener(actv));
-		
-//		MainActivity.mp.setOnCompletionListener(new OnCompletionListener(){
-//
-//			@Override
-//			public void onCompletion(MediaPlayer mp) {
-//				
-//				Methods.stopPlayer(actv);
-//				
-//				// debug
-//				Toast.makeText(actv, "Complete", 2000).show();
-//			}//public void onCompletion(MediaPlayer mp)
-//			
-//		});//public void onCompletion(MediaPlayer mp)
 
 		/*----------------------------
 		 * 3.2. Set data source
 			----------------------------*/
 		try {
+
 			MainActivity.mp.setDataSource(filePath);
 			
-//			MainActivity.mp.prepare();
-//			
-//			MainActivity.mp.start();
-//			
 		} catch (IllegalArgumentException e) {
 			
 			// Log
@@ -806,16 +750,7 @@ public class Methods {
 				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
 				+ "]", "Duration: " + String.valueOf(MainActivity.mp.getDuration()));
 		
-		//debug
-//		MainActivity.test1_setProgress2TextView();
-		
 		setProgress2TextView();
-		
-//		//
-//		TextView tv_progress = (TextView) actv.findViewById(R.id.main_tv_progress);
-//		
-//		tv_progress.setText(
-//						convert_millSeconds2digitsLabel(MainActivity.mp.getDuration()));
 		
 	}//public static void playFile(String itemAtPosition)
 
