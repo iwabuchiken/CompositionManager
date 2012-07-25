@@ -198,15 +198,17 @@ public class MainActivity extends ListActivity {
 			----------------------------*/
 //		flAdapter = new FileListAdapter<FileItem>();
 		
-		fiList = new ArrayList<FileItem>();
+		fiList = Methods.prepare_fiList(this, DBUtils.mainTableName);
 		
-		for (File file : files) {
-			
-			FileItem fi = new FileItem(file.getName());
-			
-			fiList.add(fi);
-			
-		}//for (File file : files)
+//		fiList = new ArrayList<FileItem>();
+//		
+//		for (File file : files) {
+//			
+//			FileItem fi = new FileItem(file.getName());
+//			
+//			fiList.add(fi);
+//			
+//		}//for (File file : files)
 		
 		
 		

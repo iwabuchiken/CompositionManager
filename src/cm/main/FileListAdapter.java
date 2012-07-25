@@ -2,6 +2,8 @@ package cm.main;
 
 import java.util.List;
 
+import cm.lib.Methods;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -37,7 +39,10 @@ public class FileListAdapter extends ArrayAdapter<FileItem>{
 		/*----------------------------
 		 * Steps
 		 * 1. Get view
+		 * 1-2. Get item
 		 * 2. Set text => File name
+		 * 2-2. Set duration, etc.
+		 * 
 		 * 3. Highlight the view
 			----------------------------*/
 		
@@ -59,6 +64,9 @@ public class FileListAdapter extends ArrayAdapter<FileItem>{
 			v = inflater.inflate(R.layout.list_row, null);
 		}//if (convertView != null)
 
+    	/*----------------------------
+		 * 1-2. Get item
+			----------------------------*/
     	FileItem fi = getItem(position);
     	
     	/*----------------------------
@@ -68,6 +76,34 @@ public class FileListAdapter extends ArrayAdapter<FileItem>{
 		
 		tv.setText(fi.getFile_name());
 
+		/*----------------------------
+		 * 2-2. Set duration, etc.
+			----------------------------*/
+		// Duration
+		TextView tv_duration = (TextView) v.findViewById(R.id.list_row_tv_duration);
+//		tv_duration.setText(String.valueOf(fi.getDuration()));
+		tv_duration.setText(Methods.convert_millSeconds2digitsLabel(fi.getDuration()));
+		
+		// Log
+		Log.d("FileListAdapter.java" + "["
+				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+				+ "]", "file: " + fi.getFile_name() + " / " + "fi.getDuration()" + fi.getDuration());
+		
+		
+		// Info
+//		if(!fi.getFile_info().equals("")) {
+		if(fi.getFile_info() != null) {
+			TextView tv_info = (TextView) v.findViewById(R.id.list_row_tv_file_info);
+			tv_info.setText(fi.getFile_info());
+		}
+		
+		// Memo
+//		if(!fi.getFile_info().equals("")) {
+		if(fi.getMemos() != null) {
+			TextView tv_memo= (TextView) v.findViewById(R.id.list_row_tv_memo);
+			tv_memo.setText(fi.getMemos());
+		}
+		
 		/*----------------------------
 		 * 3. Highlight the view
 		 * 		1. Get prefs

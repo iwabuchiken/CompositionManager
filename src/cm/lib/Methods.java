@@ -1234,6 +1234,24 @@ public class Methods {
 		
 	}//private static boolean storeFileItem2DB
 
+	/****************************************
+	 * prepare_FileItemList(SQLiteDatabase wdb)
+	 * 
+	 * <Caller> 
+	 * 1. refreshMainDB(Activity actv)
+	 * 
+	 * <Desc> 
+	 * 1. Convert file list into FileItem list
+	 * 		=> The other method in Methods.java, "convert_DB2FileItemList"
+	 * 				converts data in database into FileItem list
+	 * 
+	 * 
+	 * <Params> 1.
+	 * 
+	 * <Return> 1.
+	 * 
+	 * <Steps> 1.
+	 ****************************************/
 	private static List<FileItem> prepare_FileItemList(SQLiteDatabase wdb) {
 		File[] files = new File(MainActivity.rootDir).listFiles();
 		
@@ -1257,6 +1275,12 @@ public class Methods {
 			String file_path = file.getAbsolutePath();
 			
 			long duration = Methods.getDuration(file_path);
+			
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "name: " + file_name + " / " + "duration: " + duration);
+			
 			
 			long date_added = file.lastModified();
 			long date_modified = file.lastModified();
@@ -1407,5 +1431,102 @@ public class Methods {
 		
 
 	}//public static boolean dropTable(Activity actv, String tableName)
+
+	
+	/****************************************
+	 * prepare_fiList(Activity actv, String tableName)
+	 * 
+	 * <Caller> 
+	 * 1. MainActivity.set_listview()
+	 * 
+	 * <Desc> 
+	 * 1. The above caller calls this method when setting up the list view.
+	 * 
+	 * <Params> 1.
+	 * 
+	 * <Return> 1.
+	 * 
+	 * <Steps> 1.
+	 ****************************************/
+	public static List<FileItem> prepare_fiList(Activity actv, String tableName) {
+		/*----------------------------
+		 * Steps
+		 * 1. db
+		 * 2. Cursor
+		 * 3. List<>
+		 * 
+		 * 
+		 * 9. Close db
+		 * 10. Return
+			----------------------------*/
+		DBUtils dbu = new DBUtils(actv, DBUtils.dbName);
+		
+		//
+		SQLiteDatabase rdb = dbu.getReadableDatabase();
+		
+		/*----------------------------
+		 * 2. Cursor
+			----------------------------*/
+		String sql = "SELECT * FROM " + tableName;
+		Cursor c = rdb.rawQuery(sql, null);
+		
+		if (c.getCount() < 1) {
+			
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "c.getCount() < 1");
+			
+			return null;
+			
+		}//if (c.getCount() < 1)
+		
+		/*----------------------------
+		 * 3. List<>
+			----------------------------*/
+		List<FileItem> fiList = new ArrayList<FileItem>();
+		
+		c.moveToFirst();
+		
+		for (int i = 0; i < c.getCount(); i++) {
+			
+			fiList.add(Methods.convert_cursor2FileItem(c));
+			
+			c.moveToNext();
+			
+		}//for (int i = 0; i < c.getCount(); i++)
+		
+		/*----------------------------
+		 * 9. Close db
+			----------------------------*/
+		rdb.close();
+		
+		/*----------------------------
+		 * 10. Return
+			----------------------------*/
+		
+		return fiList;
+		
+	}//public static List<FileItem> prepare_fiList(Activity actv)
+
+	private static FileItem convert_cursor2FileItem(Cursor c) {
+		/*----------------------------
+		 * Steps
+		 * 1.
+			----------------------------*/
+		return new FileItem(
+				c.getString(1),		// file_name
+				c.getString(2),		// file_path
+				
+				c.getLong(3),		// duration
+				
+				c.getLong(4),		// date_added
+				c.getLong(5),		// date_modified
+				
+				c.getString(6),		// file_info
+				c.getString(7),		// memos
+				c.getString(8)		// located_at
+				);
+	}//private static FileItem convert_cursor2FileItem(Cursor c)
 
 }//public class Methods
