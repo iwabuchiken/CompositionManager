@@ -34,7 +34,9 @@ public class DBUtils extends SQLiteOpenHelper{
 	 * Class fields
 	 *****************************************************************/
 	 // DB name
-	static String dbName = null;
+	final static String dbName = "CM.db";
+	
+	final static String mainTableName = "main_table";
 	
 	// Activity
 	Activity activity;
@@ -46,54 +48,24 @@ public class DBUtils extends SQLiteOpenHelper{
 	SQLiteDatabase db = null;
 
 	//
-	String[] cols_with_index = 
-				{android.provider.BaseColumns._ID, 
-					"file_id", 		"file_path", "file_name", "date_added",
-					"date_modified", "memos", "tags"};
-	
-	String[] col_types_with_index =
-				{	"INTEGER", "TEXT", 	"TEXT",		"INTEGER",
-					"INTEGER",		"TEXT",	"TEXT"};
+	public static String baseDirName = "";
 
-	static String[] cols = 
-		{"file_id", 		"file_path", "file_name", "date_added",
-			"date_modified", "memos", "tags"};
-
-	static String[] cols_for_insert_data = 
-		{"file_id", 		"file_path", "file_name", "date_added", "date_modified"};
-
-	static String[] col_types =
-		{"INTEGER", "TEXT", 	"TEXT",		"INTEGER",
-			"INTEGER",		"TEXT",	"TEXT"};
-
-	static String[] proj = {
-		MediaStore.Images.Media._ID, 
-		MediaStore.Images.Media.DATA,
-		MediaStore.Images.Media.DISPLAY_NAME,
-		MediaStore.Images.Media.DATE_ADDED,
-		MediaStore.Images.Media.DATE_MODIFIED,
-		};
-
-	static String[] proj_for_get_data = {
-		MediaStore.Images.Media._ID, 
-		MediaStore.Images.Media.DATA,
-		MediaStore.Images.Media.DISPLAY_NAME,
-		MediaStore.Images.Media.DATE_ADDED,
-		MediaStore.Images.Media.DATE_MODIFIED,
-		"memos",
-		"tags"
-		};
-
-	static String[] cols_refresh_log = {
-		"last_refreshed", "num_of_items_added"
+	// Columns for "main_table"
+	public static final String[] cols_main_table = {
+		"file_name", "file_path", 
+		"duration", 
+		"date_added", "date_modified",
+		"file_info", "memos",
+		"located_at"
 	};
 	
-	static String[] col_types_refresh_log = {
-		"INTEGER", 			"INTEGER"
+	public static final String[] types_main_table = {
+		"TEXT", "TEXT", 
+		"INTEGER", 
+		"INTEGER", "INTEGER",
+		"TEXT", "TEXT",
+		"TEXT"
 	};
-
-	static String[] cols_memo_patterns = {"word", "table_name"};
-	static String table_name_memo_patterns = "memo_patterns";
 	
 	/*****************************************************************
 	 * Constructor
@@ -106,7 +78,7 @@ public class DBUtils extends SQLiteOpenHelper{
 		
 		this.context = context;
 		
-		this.dbName = dbName;
+//		this.dbName = dbName;
 		
 	}//public DBUtils(Context context)
 
@@ -228,22 +200,6 @@ public class DBUtils extends SQLiteOpenHelper{
 			return false;
 		}//if (cursor.getCount() > 0)
 	}//public boolean tableExists(String tableName)
-
-	public String[] get_cols_with_index() {
-		return cols_with_index;
-	}
-	
-	public String[] get_col_types_with_index() {
-		return col_types_with_index;
-	}
-
-	public String[] get_cols() {
-		return cols;
-	}
-	
-	public String[] get_col_types() {
-		return col_types;
-	}
 
 	public boolean dropTable(Activity actv, SQLiteDatabase db, String tableName) {
 		/*------------------------------

@@ -22,7 +22,11 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Vibrator;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -74,6 +78,14 @@ public class MainActivity extends ListActivity {
 	static FileListAdapter flAdapter;
 	
 	static List<FileItem> fiList;
+
+	
+	
+	//
+	public static ListView lv_main;	// Used => Methods.playFile()
+
+	//
+	public static Vibrator vib;
 	
     /** Called when the activity is first created. */
     @Override
@@ -81,6 +93,7 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+        vib = (Vibrator) this.getSystemService(this.VIBRATOR_SERVICE);
         
         initial_setup();
         
@@ -437,6 +450,7 @@ public class MainActivity extends ListActivity {
 	protected void onListItemClick(ListView lv, View v, int position, long id) {
 		/*----------------------------
 		 * Steps
+		 * 0. Initialise ListView lv_main
 		 * 1. Play
 		 * 2. Set modes
 		 * 3. Set file path to view
@@ -454,6 +468,11 @@ public class MainActivity extends ListActivity {
 		
 		
 //		super.onListItemClick(lv, v, position, id);
+		
+		/*----------------------------
+		 * 0. Initialise ListView lv_main
+			----------------------------*/
+		lv_main = lv;
 		
 		/*----------------------------
 		 * 1. Play
@@ -817,5 +836,39 @@ public class MainActivity extends ListActivity {
 		
 		
 	}//public static void test1_setProgress2TextView()
+
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// 
+		MenuInflater mi = getMenuInflater();
+		mi.inflate(R.menu.main_menu, menu);
+		
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		switch (item.getItemId()) {
+		
+		case R.id.main_opt_menu_refresh_db://---------------------------------------
+
+			vib.vibrate(Methods.vibLength_click);
+			
+			Methods.refreshMainDB(this);
+			
+			break;
+			
+		case R.id.main_opt_menu_db_activity://-----------------------------------------------
+			
+			vib.vibrate(Methods.vibLength_click);
+			break;
+			
+			
+		}//switch (item.getItemId())
+		
+		return super.onOptionsItemSelected(item);
+		
+	}//public boolean onOptionsItemSelected(MenuItem item)
+
 }//public class MainActivity extends ListActivity
 

@@ -38,30 +38,39 @@ public final class R {
         public static final int cm_simple_rec_70x70_dis=0x7f020009;
         public static final int cm_stop_70x70=0x7f02000a;
         public static final int ic_launcher=0x7f02000b;
+        public static final int ifm8_opt_menu_db_activity=0x7f02000c;
+        public static final int ifm8_opt_menu_refresh_db=0x7f02000d;
     }
     public static final class id {
-        public static final int list_row_LL_2=0x7f060002;
-        public static final int list_row_LL_3=0x7f060003;
-        public static final int list_row_LL_root=0x7f060000;
-        public static final int list_row_iv=0x7f060001;
-        public static final int list_row_tv_duration=0x7f060005;
-        public static final int list_row_tv_file_info=0x7f060006;
-        public static final int list_row_tv_file_name=0x7f060004;
-        public static final int list_row_tv_memo=0x7f060007;
-        public static final int main_iv_pause=0x7f06000c;
-        public static final int main_iv_play=0x7f06000b;
-        public static final int main_iv_rec=0x7f06000d;
-        public static final int main_sb=0x7f060009;
-        public static final int main_tv=0x7f060008;
-        public static final int main_tv_progress=0x7f06000a;
+        public static final int list_row_LL_2=0x7f070002;
+        public static final int list_row_LL_3=0x7f070003;
+        public static final int list_row_LL_root=0x7f070000;
+        public static final int list_row_iv=0x7f070001;
+        public static final int list_row_tv_duration=0x7f070005;
+        public static final int list_row_tv_file_info=0x7f070006;
+        public static final int list_row_tv_file_name=0x7f070004;
+        public static final int list_row_tv_memo=0x7f070007;
+        public static final int main_iv_pause=0x7f07000c;
+        public static final int main_iv_play=0x7f07000b;
+        public static final int main_iv_rec=0x7f07000d;
+        public static final int main_opt_menu_db_activity=0x7f07000f;
+        public static final int main_opt_menu_refresh_db=0x7f07000e;
+        public static final int main_sb=0x7f070009;
+        public static final int main_tv=0x7f070008;
+        public static final int main_tv_progress=0x7f07000a;
     }
     public static final class layout {
         public static final int list_row=0x7f030000;
         public static final int list_row_original=0x7f030001;
         public static final int main=0x7f030002;
     }
+    public static final class menu {
+        public static final int main_menu=0x7f060000;
+    }
     public static final class string {
         public static final int app_name=0x7f050001;
         public static final int hello=0x7f050000;
+        public static final int main_opt_menu_db_activity=0x7f050003;
+        public static final int main_opt_menu_refresh_db=0x7f050002;
     }
 }

@@ -16,9 +16,11 @@ public class FileItem {
 	 * Constructors
 	 ****************************************/
 	public FileItem(
-						String file_name, String file_path, 
+						String file_name, String file_path,
+						long duration,
 						long date_added, long date_modified, 
-						String file_info, String memos) {
+						String file_info, String memos,
+						String located_at) {
 		
 		this.file_name = file_name;
 		this.file_path = file_path;

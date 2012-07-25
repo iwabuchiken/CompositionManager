@@ -21,6 +21,7 @@ import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -30,6 +31,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -43,6 +45,7 @@ import android.widget.Toast;
 
 import org.apache.commons.lang.StringUtils;
 
+import cm.main.FileItem;
 import cm.main.MainActivity;
 import cm.main.R;
 
@@ -209,125 +212,6 @@ public class Methods {
 				message);
 		
 	}//public static void toastAndLog(Activity actv, String message)
-	
-	/****************************************
-	 *		insertDataIntoDB()
-	 * 
-	 * <Caller> 
-	 * 1. public static boolean refreshMainDB(ListActivity actv)
-	 * 
-	 * <Desc> 1. <Params> 1.
-	 * 
-	 * <Return> 1.
-	 * 
-	 * <Steps> 1.
-	 ****************************************/
-	private static int insertDataIntoDB(SQLiteDatabase wdb, DBUtils dbu, Cursor c,
-									String tableName, String backupTableName) {
-		/*----------------------------
-		 * Steps
-		 * 1. Move to first
-		 * 2. Set variables
-		 * 3. Obtain data
-		 * 4. Insert data
-		 * 5. Return => counter
-			----------------------------*/
-		
-		//
-		c.moveToFirst();
-		
-		//
-//		String[] columns = DBUtils.cols;
-		
-		/*----------------------------
-		 * 2. Set variables
-			----------------------------*/
-		int counter = 0;
-//		long threshHoldTime = getMillSeconds(2012, 7, 5);
-		long threshHoldTime = getMillSeconds(2012, 6, 5);
-		
-//		// Log
-//		Log.d("Methods.java" + "["
-//				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-//				+ "]", "threshHoldTime => " + threshHoldTime);
-		
-		/*----------------------------
-		 * 3. Obtain data
-			----------------------------*/
-//		for (int i = c.getCount() - tempRecordNum; i < c.getCount(); i++) {
-		for (int i = 0; i < c.getCount(); i++) {
-			//
-//			if(c.getLong(3) >= threshHoldTime) {
-//			if(c.getLong(3) * 1000 >= threshHoldTime) {
-//			if(i > c.getCount() - tempRecordNum) {
-				//
-				String[] values = {
-						String.valueOf(c.getLong(0)),
-						c.getString(1),
-						c.getString(2),
-						String.valueOf(c.getLong(3)),
-						String.valueOf(c.getLong(4))
-				};
-
-				/*----------------------------
-				 * 4. Insert data
-				 * 		1. Insert data to tableName
-				 * 		2. Record result
-				 * 		3. Insert data to backupTableName
-				 * 		4. Record result
-					----------------------------*/
-//				boolean blResult = true;
-
-//				boolean blResult = dbu.insertData(wdb, tableName, columns, values);
-				boolean blResult = 
-							dbu.insertData(wdb, tableName, DBUtils.cols_for_insert_data, values);
-				
-//				// Log
-//				Log.d("Methods.java"
-//						+ "["
-//						+ Thread.currentThread().getStackTrace()[2]
-//								.getLineNumber() + "]", 
-//						StringUtils.join(values, "/"));
-				
-				
-				
-//				if (blResult == false) {
-//					// Log
-//					Log.d("Methods.java"
-//							+ "["
-//							+ Thread.currentThread().getStackTrace()[2]
-//									.getLineNumber() + "]", "i => " + i + "/" + "c.getLong(0) => " + c.getLong(0));
-//				} 	
-				
-				
-				if (blResult == false) {
-					// Log
-					Log.d("Methods.java"
-							+ "["
-							+ Thread.currentThread().getStackTrace()[2]
-									.getLineNumber() + "]", "i => " + i + "/" + "c.getLong(0) => " + c.getLong(0));
-				} else {//if (blResult == false)
-					counter += 1;
-				}
-//			}//if(c.getLong(3) >= threshHoldTime)
-			
-			//
-			c.moveToNext();
-			
-			
-		}//for (int i = 0; i < c.getCount(); i++)
-		
-		// Log
-		Log.d("Methods.java" + "["
-				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-				+ "]", "counter => " + counter);
-		
-		/*----------------------------
-		 * 5. Return => counter
-			----------------------------*/
-		return counter;
-		
-	}//private static int insertDataIntoDB(Cursor c)
 
 	public static long getMillSeconds(int year, int month, int date) {
 		// Calendar
@@ -657,6 +541,9 @@ public class Methods {
 		 * 		1. MediaPlayer
 		 * 		2. Set data source
 		 * 		3. Prepare mp
+		 * 
+		 * 		3-2. Set duration to the list item
+		 * 
 		 * 		4. Start
 		 * 		5. Set duration to the view
 			----------------------------*/
@@ -736,6 +623,83 @@ public class Methods {
 			Toast.makeText(actv, "Exception", 2000).show();
 			
 		}//try
+		
+		/*----------------------------
+		 * 3.3-2. Set duration to the list item
+		 * 		1. Prepare digit label
+		 * 		2.
+			----------------------------*/
+		int duration = MainActivity.mp.getDuration() / 1000;
+		
+		String s_duration = 
+					Methods.convert_millSeconds2digitsLabel(MainActivity.mp.getDuration());
+		
+		SharedPreferences prefs = 
+				actv.getSharedPreferences(MainActivity.PREFS_HIGHLIGHT, MainActivity.MODE_PRIVATE);
+		
+		int current_position = prefs.getInt(MainActivity.PREFS_HIGHLIGHT, -1);
+		
+		if (current_position != -1) {
+
+			View v_list_row = (View) MainActivity.lv_main.getChildAt(current_position);
+			
+			if (v_list_row != null) {
+				
+				Log.d("Methods.java" + "["
+						+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+						+ "]", "View => Obtained");
+				
+				TextView tv_duration = (TextView) v_list_row.findViewById(R.id.list_row_tv_duration);
+				tv_duration.setText(s_duration);
+				
+			} else {//if (v_list_row != null)
+				
+				// Log
+				Log.d("Methods.java" + "["
+						+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+						+ "]", "v_list_row == null");
+				
+			}//if (v_list_row != null)
+			
+//			Log.d("Methods.java" + "["
+//					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//					+ "]", "View => Obtained");
+//			
+//			
+//			// Log
+//			Log.d("Methods.java" + "["
+//					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//					+ "]", "View => Obtained");
+//			
+//			TextView tv_duration = (TextView) v_list_row.findViewById(R.id.list_row_tv_duration);
+//			tv_duration.setText(s_duration);
+			
+//			TextView tv_duration = (TextView) MainActivity.lv_main.getChildAt(current_position);
+//			tv_duration.setText(s_duration);
+			
+		} else {//if (current_position != -1)
+
+			View v_list_row = (View) MainActivity.lv_main.getChildAt(current_position);
+			
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "View => Obtained");
+			
+			TextView tv_duration = (TextView) v_list_row.findViewById(R.id.list_row_tv_duration);
+			tv_duration.setText("No data");
+
+//			TextView tv_duration = (TextView) MainActivity.lv_main.getChildAt(current_position);
+//			tv_duration.setText("No data");
+			
+		}//if (current_position != -1)
+		
+//		MainActivity.lv_main.getItemAtPosition(position)
+		
+//		TextView tv_duration = 
+//					(TextView) MainActivity.lv_main.findViewById(R.id.list_row_tv_duration);
+//		
+//		tv_duration.setText(s_duration);
 		
 		/*----------------------------
 		 * 3.4. Start
@@ -1019,5 +983,271 @@ public class Methods {
 		}
 		
 	}//class MPOnCompletionListener implements OnCompletionListener
+
+	public static void refreshMainDB(Activity actv) {
+		// Log
+		Log.d("Methods.java" + "["
+				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+				+ "]", "refreshMainDB => Started");
+		
+		
+		/*----------------------------
+		 * Steps
+		 * 1. Set up DB(writable)
+		 * 2. Table exists?
+		 * 2-1. If no, then create one
+
+		 * 3. Prepare data
+
+		 * 4. Insert data into db
+		 *
+		 * 5. Update table "refresh_log"
+		 * 
+		 * 9. Close db
+		 * 
+		 * 10. Return
+			----------------------------*/
+		/*----------------------------
+		 * 1. Set up DB(writable)
+			----------------------------*/
+		//
+		DBUtils dbu = new DBUtils(actv, DBUtils.dbName);
+		
+		//
+		SQLiteDatabase wdb = dbu.getWritableDatabase();
+		
+		/*----------------------------
+		 * 2. Table exists?
+		 * 2-1. If no, then create one
+			----------------------------*/
+		boolean res = dbu.tableExists(wdb, DBUtils.mainTableName);
+		
+		if (res == false) {
+			
+			res = dbu.createTable(
+								wdb, 
+								DBUtils.mainTableName, 
+								DBUtils.cols_main_table, 
+								DBUtils.types_main_table);
+			
+			if (res == false) {
+				
+				// debug
+				Toast.makeText(actv, "テーブルを作れませんでした", 2000).show();
+				
+				wdb.close();
+				
+				return;
+				
+			} else {//if (res == false)
+				
+				// debug
+				Toast.makeText(
+						actv, "テーブルをつくりました: " + DBUtils.mainTableName, 2000).show();
+				
+			}//if (res == false)
+			
+		}//if (res == false)
+		
+		/*----------------------------
+		 * 3. Prepare data
+			----------------------------*/
+		
+		File[] files = new File(MainActivity.rootDir).listFiles();
+		
+		List<String> file_names = new ArrayList<String>();
+		
+		List<FileItem> fileItems = new ArrayList<FileItem>();
+		
+		
+		for (File file : files) {
+			/*----------------------------
+			 * Steps
+			 * 1. Each datum
+			 * 2. Duration
+			 * 3. Instatiate FileItem object
+			 * 4. Add to list
+				----------------------------*/
+			
+			
+//			file_names.add(file.getName());
+			
+			String file_name = file.getName();
+			String file_path = file.getAbsolutePath();
+			
+			long date_added = file.lastModified();
+			long date_modified = file.lastModified();
+			
+			String file_info = "";
+			String memos = "";
+			
+			String located_at = DBUtils.mainTableName;
+			
+			/*----------------------------
+			 * 2. Duration
+			 * 		1. temp_mp
+			 * 		2. Set source
+			 * 		2-1. Prepare
+			 * 		2-2. Get duration
+			 * 		2-3. Release temp_mp
+			 * 
+			 * 		3. Prepare	=> NOP
+			 * 		4. Start			=> NOP
+				----------------------------*/
+			MediaPlayer temp_mp = new MediaPlayer();
+			
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "MediaPlayer: Instantiated");
+			
+			try {
+				
+				temp_mp.setDataSource(file_path);
+				
+				// Log
+				Log.d("Methods.java" + "["
+						+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+						+ "]", "MediaPlayer: Data source set");
+				
+			} catch (IllegalArgumentException e) {
+				
+				// Log
+				Log.d("Methods.java"
+						+ "["
+						+ Thread.currentThread().getStackTrace()[2]
+								.getLineNumber() + "]", "Exception: " + e.toString());
+				
+				wdb.close();
+				
+				return;
+				
+			} catch (IllegalStateException e) {
+				// Log
+				Log.d("Methods.java"
+						+ "["
+						+ Thread.currentThread().getStackTrace()[2]
+								.getLineNumber() + "]", "Exception: " + e.toString());
+				
+				wdb.close();
+				
+				return;
+				
+			} catch (IOException e) {
+				// Log
+				Log.d("Methods.java"
+						+ "["
+						+ Thread.currentThread().getStackTrace()[2]
+								.getLineNumber() + "]", "Exception: " + e.toString());
+				
+				wdb.close();
+				
+				return;
+				
+			}//try
+			
+			/*----------------------------
+			 * 2.2-1. Prepare
+				----------------------------*/
+			try {
+				
+				temp_mp.prepare();
+				
+			} catch (IllegalStateException e) {
+				// Log
+				Log.d("Methods.java"
+						+ "["
+						+ Thread.currentThread().getStackTrace()[2]
+								.getLineNumber() + "]", "Exception: " + e.toString());
+				
+				wdb.close();
+				
+				return;
+				
+			} catch (IOException e) {
+				// Log
+				Log.d("Methods.java"
+						+ "["
+						+ Thread.currentThread().getStackTrace()[2]
+								.getLineNumber() + "]", "Exception: " + e.toString());
+				
+				wdb.close();
+				
+				return;
+				
+			}//try
+
+			/*----------------------------
+			 * 2.2-2. Get duration
+				----------------------------*/
+			long duration = temp_mp.getDuration();
+			
+			/*----------------------------
+			 * 2.2-3. Release temp_mp
+				----------------------------*/
+			temp_mp.reset();
+			temp_mp.release();
+			temp_mp = null;
+			
+//			/*----------------------------
+//			 * 2.3. Prepare
+//				----------------------------*/
+//			try {
+//				temp_mp.prepare();
+//			} catch (IllegalStateException e) {
+//				// Log
+//				Log.d("Methods.java"
+//						+ "["
+//						+ Thread.currentThread().getStackTrace()[2]
+//								.getLineNumber() + "]", "Exception: " + e.toString());
+//				
+//				wdb.close();
+//				
+//				return;
+//				
+//			} catch (IOException e) {
+//				// Log
+//				Log.d("Methods.java"
+//						+ "["
+//						+ Thread.currentThread().getStackTrace()[2]
+//								.getLineNumber() + "]", "Exception: " + e.toString());
+//				
+//				wdb.close();
+//				
+//				return;
+//				
+//			}//try
+			
+			/*----------------------------
+			 * 2.4. Start
+				----------------------------*/
+			/*----------------------------
+			 * 3. Instatiate FileItem object
+			 * 4. Add to list
+				----------------------------*/
+			fileItems.add(new FileItem(
+									file_name, file_path,
+									duration,
+									date_added, date_modified, 
+									file_info, memos,
+									located_at));
+			
+		}//for (File file : files)
+
+		/*----------------------------
+		 * 4. Insert data into db
+			----------------------------*/
+		// Log
+		Log.d("Methods.java" + "["
+				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+				+ "]", "fileItems.size(): " + fileItems.size());
+		
+		
+		/*----------------------------
+		 * 9. Close db
+			----------------------------*/
+		wdb.close();
+		
+	}//public static void refreshMainDB(Activity actv)
 	
 }//public class Methods

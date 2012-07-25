@@ -4,4 +4,6 @@
     <string name="hello">Hello World, CompositionManagerActivity!</string>
     <string name="app_name">CompositionManager</string>
 
+    <string name="main_opt_menu_refresh_db">DBリフレッシュ</string>
+    <string name="main_opt_menu_db_activity">データベース</string>
 </resources>
