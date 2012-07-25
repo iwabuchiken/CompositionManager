@@ -452,11 +452,6 @@ public class MainActivity extends ListActivity {
 		 * 		1. Recording?
 		 * 		2. Play
 			----------------------------*/
-//		// Log
-//		Log.d("MainActivity.java" + "["
-//				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-//				+ "]", (String) lv.getItemAtPosition(position));
-		
 		/*----------------------------
 		 * 1.1. Recording?
 			----------------------------*/
@@ -525,72 +520,84 @@ public class MainActivity extends ListActivity {
 		 * 		1. Prefrences registered?
 		 * 		2. If yes, change the backgrounds => Prev, current
 		 * 		3. Set a new prefs value
+		 * 
+		 * 		4. Notify fiAdapter
 			----------------------------*/
 		/*----------------------------
-		 * 1. Prefrences registered?
+		 * 5.1. Prefrences registered?
 			----------------------------*/
 		SharedPreferences prefs = 
 					getSharedPreferences(PREFS_HIGHLIGHT, MODE_PRIVATE);
 
-		int prev_position = prefs.getInt(PREFS_HIGHLIGHT, -1);
-		
-		if (prev_position == -1) {
-			
-			v.setBackgroundColor(Color.BLUE);
-			
-		} else {//if (prev_position == -1)
-			
-			// Log
-			Log.d("MainActivity.java" + "["
-					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-					+ "]", "prev_position: " + prev_position);
-			
-			
-			View prev_view = lv.getChildAt(prev_position);
-			
-			// Log
-			Log.d("MainActivity.java" + "["
-					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-					+ "]", "lv.getChildCount(): " + lv.getChildCount());
-			
-			
-			if (prev_view != null) {
-				
-				prev_view.setBackgroundColor(Color.BLACK);
-				
-			} else {//if (prev_view != null)
-				
-				// Log
-				Log.d("MainActivity.java"
-						+ "["
-						+ Thread.currentThread().getStackTrace()[2]
-								.getLineNumber() + "]", "prev_view == null");
-				
-			}//if (prev_view != null)
-			
-			
-			v.setBackgroundColor(Color.BLUE);
-			
-		}//if (prev_position == -1)
-		
+//		int prev_position = prefs.getInt(PREFS_HIGHLIGHT, -1);
+//		
+//		if (prev_position == -1) {
+//			
+//			v.setBackgroundColor(Color.BLUE);
+//			
+//		} else {//if (prev_position == -1)
+//			
+//			// Log
+//			Log.d("MainActivity.java" + "["
+//					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//					+ "]", "prev_position: " + prev_position);
+//			
+//			
+//			View prev_view = lv.getChildAt(prev_position);
+//			
+//			// Log
+//			Log.d("MainActivity.java" + "["
+//					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//					+ "]", "lv.getChildCount(): " + lv.getChildCount());
+//			
+//			
+//			if (prev_view != null) {
+//				
+//				prev_view.setBackgroundColor(Color.BLACK);
+//				
+//			} else {//if (prev_view != null)
+//				
+//				// Log
+//				Log.d("MainActivity.java"
+//						+ "["
+//						+ Thread.currentThread().getStackTrace()[2]
+//								.getLineNumber() + "]", "prev_view == null");
+//				
+//			}//if (prev_view != null)
+//			
+//			
+//			v.setBackgroundColor(Color.BLUE);
+//			
+//		}//if (prev_position == -1)
+//		
 		//
 //		adapter.notifyDataSetChanged();
-		flAdapter.notifyDataSetChanged();
+//		flAdapter.notifyDataSetChanged();
 		
-		// Log
-		Log.d("MainActivity.java" + "["
-				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-				+ "]", "Adapter notified");
+//		// Log
+//		Log.d("MainActivity.java" + "["
+//				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//				+ "]", "Adapter notified");
 		
 		
 		/*----------------------------
-		 * 3. Set a new prefs value
+		 * 5.3. Set a new prefs value
 			----------------------------*/
 		SharedPreferences.Editor editor = prefs.edit();
 		
 		editor.putInt(PREFS_HIGHLIGHT, position);
 		
 		editor.commit();
+		
+		/*----------------------------
+		 * 5.4. Notify fiAdapter
+			----------------------------*/
+		flAdapter.notifyDataSetChanged();
+		
+		// Log
+		Log.d("MainActivity.java" + "["
+				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+				+ "]", "Adapter notified");
 		
 		//
 //		v.setBackgroundColor(Color.BLUE);

@@ -2,7 +2,11 @@ package cm.main;
 
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +18,8 @@ public class FileListAdapter extends ArrayAdapter<FileItem>{
 	// Inflater
 	LayoutInflater inflater;
 
+	//
+	Activity actv;
 	
 	
 	public FileListAdapter(Context con, int resourceId, List<FileItem> items) {
@@ -22,6 +28,7 @@ public class FileListAdapter extends ArrayAdapter<FileItem>{
 		// Inflater
 		inflater = (LayoutInflater) con.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
+		this.actv = (Activity) con;
 		
 	}//public FileListAdapter(Context con, int resourceId, List<FileItem> items)
 
@@ -31,7 +38,15 @@ public class FileListAdapter extends ArrayAdapter<FileItem>{
 		 * Steps
 		 * 1. Get view
 		 * 2. Set text => File name
+		 * 3. Highlight the view
 			----------------------------*/
+		
+		// Log
+		Log.d("FileListAdapter.java" + "["
+				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+				+ "]", "position: " + position);
+		
+		
 		/*----------------------------
 		 * 1. Get view
 			----------------------------*/
@@ -53,6 +68,84 @@ public class FileListAdapter extends ArrayAdapter<FileItem>{
 		
 		tv.setText(fi.getFile_name());
 
+		/*----------------------------
+		 * 3. Highlight the view
+		 * 		1. Get prefs
+		 * 		2. Get previous position
+		 * 		3. Highlight
+			----------------------------*/
+		SharedPreferences prefs = 
+				actv.getSharedPreferences(MainActivity.PREFS_HIGHLIGHT, MainActivity.MODE_PRIVATE);
+
+		int prev_position = prefs.getInt(MainActivity.PREFS_HIGHLIGHT, -1);
+		
+		/*----------------------------
+		 * 3.3. Highlight
+			----------------------------*/
+		if (prev_position == -1) {
+		
+//			v.setBackgroundColor(Color.BLUE);
+			
+		} else {//if (prev_position == -1)
+			/*----------------------------
+			 * Steps
+			 * 1. Get previous item
+			 * 2. Set hightlight
+				----------------------------*/
+			
+			// Log
+			Log.d("MainActivity.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "prev_position: " + prev_position);
+			
+			
+//			View prev_view = lv.getChildAt(prev_position);
+			FileItem fi_prev = getItem(prev_position);
+			
+			// Log
+			Log.d("FileListAdapter.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "fi_prev.getFile_name(): " + fi_prev.getFile_name());
+			
+			/*----------------------------
+			 * 3.3.2. Set hightlight
+				----------------------------*/
+			if (position == prev_position) {
+				
+				v.setBackgroundColor(Color.BLUE);
+				
+			} else {//if (position == prev_position)
+				
+				v.setBackgroundColor(Color.BLACK);
+				
+			}//if (position == prev_position)
+			
+//			// Log
+//			Log.d("MainActivity.java" + "["
+//					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//					+ "]", "lv.getChildCount(): " + lv.getChildCount());
+//			
+//			
+//			if (prev_view != null) {
+//				
+//				prev_view.setBackgroundColor(Color.BLACK);
+//				
+//			} else {//if (prev_view != null)
+//				
+//				// Log
+//				Log.d("MainActivity.java"
+//						+ "["
+//						+ Thread.currentThread().getStackTrace()[2]
+//								.getLineNumber() + "]", "prev_view == null");
+//				
+//			}//if (prev_view != null)
+//			
+//			
+//			v.setBackgroundColor(Color.BLUE);
+			
+		}//if (prev_position == -1)
+
+		
 		return v;
 		
 //		return super.getView(position, convertView, parent);
