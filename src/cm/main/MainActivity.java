@@ -59,8 +59,8 @@ public class MainActivity extends ListActivity {
 	public static String targetFolder;
 
 	//
-	static int max = 5;	// Used => test1_setProgress2TextView()
-	static int counter = 0;
+	public static int max = 5;	// Used => test1_setProgress2TextView()
+	public static int counter = 0;
 	public static Timer timer;
 	
     /** Called when the activity is first created. */
@@ -220,7 +220,64 @@ public class MainActivity extends ListActivity {
 					boolean fromUser) {
 				// TODO 自動生成されたメソッド・スタブ
 				
-				tv_progress.setText(String.valueOf(progress));
+				if (fromUser) {
+					
+					if (mp != null) {
+						
+						// Log
+						Log.d("MainActivity.java"
+								+ "["
+								+ Thread.currentThread().getStackTrace()[2]
+										.getLineNumber() + "]", "mp != null");
+						
+						
+						int dur = mp.getDuration();
+						
+						// Log
+						Log.d("MainActivity.java"
+								+ "["
+								+ Thread.currentThread().getStackTrace()[2]
+										.getLineNumber() + "]", "dur: " + dur + " / progress: " + progress);
+						
+						
+//						counter = dur * (int) ((float) progress / 100);
+						
+						counter = (int) (dur * ((float) progress / 100) / 1000);
+						
+						mp.seekTo((int) (dur * (float) progress / 100));
+						
+						
+						
+//						// Log
+//						Log.d("MainActivity.java"
+//								+ "["
+//								+ Thread.currentThread().getStackTrace()[2]
+//										.getLineNumber() + "]", "counter: " + counter);
+//						
+//						Log.d("MainActivity.java"
+//								+ "["
+//								+ Thread.currentThread().getStackTrace()[2]
+////										.getLineNumber() + "]", "dur * (int) ((float) progress / 100): " + dur * (int) ((float) progress / 100));
+//										.getLineNumber() + "]", "(int) dur * ((float) progress / 100): " + (int) dur * ((float) progress / 100));
+//
+//						Log.d("MainActivity.java"
+//								+ "["
+//								+ Thread.currentThread().getStackTrace()[2]
+////										.getLineNumber() + "]", "dur * (int) ((float) progress / 100): " + dur * (int) ((float) progress / 100));
+//										.getLineNumber() + "]", "(int) (dur * ((float) progress / 100) / 1000): " + (int) (dur * ((float) progress / 100) / 1000));
+
+					}//if (mp != null)
+					
+					
+//					tv_progress.setText(String.valueOf(progress));
+					
+//					int value = (int) (float) progress / 100 * max;
+//					
+////					tv_progress.setText(String.valueOf(value));
+//					tv_progress.setText(String.valueOf(value + 1));
+					
+				}//if (fromUser)
+//				tv_progress.setText(String.valueOf(progress));
 				
 			}
 
@@ -514,6 +571,11 @@ public class MainActivity extends ListActivity {
 
 	public static void setValue(int value) {
 		
+		// Log
+		Log.d("MainActivity.java" + "["
+				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+				+ "]", "setValue(int value)");
+		
 		if (tv_progress != null) {
 			
 			tv_progress.setText(String.valueOf(value));
@@ -529,9 +591,32 @@ public class MainActivity extends ListActivity {
 	}
 	
 	public static void test1_setProgress2TextView() {
+		/*----------------------------
+		 * Steps
+		 * 1. Get max
+		 * 2. Instantiate => Timer
+		 * 3. Instantiate => Handler
+		 * 
+		 * 3-2. Set zero to the progress text view
+		 * 			=> Set the global field "counter" to zero
+		 * 
+		 * 4. Schedule
+			----------------------------*/
 		
+		// Log
+		Log.d("MainActivity.java" + "["
+				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+				+ "]", "test1_setProgress2TextView() => Starts");
+		
+		/*----------------------------
+		 * 1. Get max
+			----------------------------*/
 		max = mp.getDuration() / 1000;
 		
+		/*----------------------------
+		 * 2. Instantiate => Timer
+		 * 3. Instantiate => Handler
+			----------------------------*/
 		timer = new Timer();
 		
 		final android.os.Handler handler = new android.os.Handler();
@@ -539,6 +624,18 @@ public class MainActivity extends ListActivity {
 //		final int counter = 0;
 //		final int max = 10;
 		
+		/*----------------------------
+		 * 3-2. Set zero to the progress text view
+			----------------------------*/
+//		TextView tv_progress = (TextView) findViewById(R.id.main_tv_progress);
+//		tv_progress.setText("0");
+		
+		counter = 0;
+		
+		
+		/*----------------------------
+		 * 4. Schedule
+			----------------------------*/
 		timer.schedule(
 			new TimerTask(){
 

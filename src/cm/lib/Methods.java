@@ -13,6 +13,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -788,7 +790,9 @@ public class Methods {
 				+ "]", "Duration: " + String.valueOf(MainActivity.mp.getDuration()));
 		
 		//debug
-		MainActivity.test1_setProgress2TextView();
+//		MainActivity.test1_setProgress2TextView();
+		
+		setProgress2TextView();
 		
 //		//
 //		TextView tv_progress = (TextView) actv.findViewById(R.id.main_tv_progress);
@@ -797,6 +801,111 @@ public class Methods {
 //						convert_millSeconds2digitsLabel(MainActivity.mp.getDuration()));
 		
 	}//public static void playFile(String itemAtPosition)
+
+	private static void setProgress2TextView() {
+		/*----------------------------
+		 * Steps
+		 * 1. Get max
+		 * 2. Instantiate => Timer
+		 * 3. Instantiate => Handler
+		 * 
+		 * 3-2. Set zero to the progress text view
+		 * 			=> Set the global field "counter" to zero
+		 * 
+		 * 4. Schedule
+			----------------------------*/
+		
+		
+		/*----------------------------
+		 * 1. Get max
+			----------------------------*/
+		MainActivity.max = MainActivity.mp.getDuration() / 1000;
+		
+		/*----------------------------
+		 * 2. Instantiate => Timer
+		 * 3. Instantiate => Handler
+			----------------------------*/
+		MainActivity.timer = new Timer();
+		
+		final android.os.Handler handler = new android.os.Handler();
+		
+//		final int counter = 0;
+//		final int max = 10;
+		
+		/*----------------------------
+		 * 3-2. Set zero to the progress text view
+			----------------------------*/
+//		TextView tv_progress = (TextView) findViewById(R.id.main_tv_progress);
+//		tv_progress.setText("0");
+		
+		MainActivity.counter = 0;
+		
+		
+		/*----------------------------
+		 * 4. Schedule
+			----------------------------*/
+		MainActivity.timer.schedule(
+			new TimerTask(){
+
+				@Override
+				public void run() {
+					handler.post(new Runnable(){
+
+						@Override
+						public void run() {
+							
+							if (MainActivity.counter < MainActivity.max) {
+								/*----------------------------
+								 * Steps
+								 * 1. Set progress to text view
+								 * 1-2. Set progress => SeekBar
+								 * 2. Count
+									----------------------------*/
+								
+								
+//								// Log
+//								Log.d("Methods.java"
+//										+ "["
+//										+ Thread.currentThread()
+//												.getStackTrace()[2]
+//												.getLineNumber() + "]",
+//										"Calling => setValue()");
+								
+								/*----------------------------
+								 * 1. Set progress to text view
+									----------------------------*/
+//								MainActivity.setValue(MainActivity.counter);
+								setValue(MainActivity.counter);
+
+								/*----------------------------
+								 * 1-2. Set progress => SeekBar
+									----------------------------*/
+//								MainActivity.sb.setProgress(MainActivity.counter);
+								
+								int sbValue = (int) (100 * (float) MainActivity.counter / MainActivity.max);
+								
+//								MainActivity.sb.setProgress(sbValue);
+								MainActivity.sb.setProgress(sbValue + 1);
+								
+								/*----------------------------
+								 * 2. Count
+									----------------------------*/
+								MainActivity.counter += 1;
+								
+							}//if (counter < max)
+							
+						}//public void run() // Runnable
+						
+					});
+				
+				}//public void run()  // 
+				
+			}, //new TimerTask()
+			0, 
+			1000
+		);//timer.schedule(new TimerTask()
+		
+	}//private static void setProgress2TextView()
 
 	public static void  stopPlayer(Activity actv) {
 		/*----------------------------
@@ -894,4 +1003,33 @@ public class Methods {
 		return sb.toString();
 		
 	}//public static void  convert_millSeconds2digitsLabel()
+
+	/****************************************
+	 * setValue(int value)
+	 * 
+	 * <Caller> 
+	 * 1. setProgress2TextView
+	 * 
+	 * <Desc> 1. <Params> 1.
+	 * 
+	 * <Return> 1.
+	 * 
+	 * <Steps> 1.
+	 ****************************************/
+	public static void setValue(int value) {
+		
+		if (MainActivity.tv_progress != null) {
+			
+			MainActivity.tv_progress.setText(String.valueOf(value));
+			
+		} else {//if (tv_progress != null)
+			
+//			tv_progress = (TextView) MainActivity.this.findViewById(R.id.main_tv_progress);
+			
+		}//if (tv_progress != null)
+		
+//		tv_progress.setText(String.valueOf(value));
+		
+	}//public static void setValue(int value)
+
 }//public class Methods
