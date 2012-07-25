@@ -15,7 +15,10 @@ import cm.lib.ButtonOnTouchListener;
 import cm.lib.Methods;
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -62,6 +65,15 @@ public class MainActivity extends ListActivity {
 	public static int max = 5;	// Used => test1_setProgress2TextView()
 	public static int counter = 0;
 	public static Timer timer;
+
+	// Prefs name for highlighting the item
+	public static final String PREFS_HIGHLIGHT = "PREFS_HIGHLIGHT";
+
+	//
+	static ArrayAdapter<String> adapter;
+	static FileListAdapter flAdapter;
+	
+	static List<FileItem> fiList;
 	
     /** Called when the activity is first created. */
     @Override
@@ -105,6 +117,17 @@ public class MainActivity extends ListActivity {
 			----------------------------*/
 		mp = new MediaPlayer();
 		
+		mp.setOnCompletionListener(new OnCompletionListener(){
+
+			@Override
+			public void onCompletion(MediaPlayer mp) {
+				
+				Methods.stopPlayer(MainActivity.this);
+				
+			}//public void onCompletion(MediaPlayer mp)
+			
+		});//public void onCompletion(MediaPlayer mp)
+		
 		//debug
 //		test1_setProgress2TextView();
 		
@@ -126,6 +149,8 @@ public class MainActivity extends ListActivity {
 		
 		/*----------------------------
 		 * 2. Get file list
+		 * 		1. List<String>
+		 * 		2. List<FileItem>
 			----------------------------*/
 //		String targetFolder = "tapeatalk_records";
 		targetFolder = "tapeatalk_records";
@@ -146,22 +171,46 @@ public class MainActivity extends ListActivity {
 			
 		}//for (File file : files)
 		
+		/*----------------------------
+		 * 2.2. List<FileItem>
+			----------------------------*/
+//		flAdapter = new FileListAdapter<FileItem>();
+		
+		fiList = new ArrayList<FileItem>();
+		
+		for (File file : files) {
+			
+			FileItem fi = new FileItem(file.getName());
+			
+			fiList.add(fi);
+			
+		}//for (File file : files)
+		
+		
 		
 		/*----------------------------
 		 * 3. Adapter
 			----------------------------*/
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-								this,
-								android.R.layout.simple_list_item_1,
-								file_names
-								);
+//		adapter = new ArrayAdapter<String>(
+//								this,
+//								android.R.layout.simple_list_item_1,
+//								file_names
+//								);
+		
+		flAdapter = new FileListAdapter(
+				this,
+				R.layout.main,
+				fiList
+				);
 		
 		/*----------------------------
 		 * 4. Set adapter
 			----------------------------*/
 //		lv.setAdapter(adapter);
 //		setAdapter(adapter);
-		setListAdapter(adapter);
+//		setListAdapter(adapter);
+		
+		setListAdapter(flAdapter);
 		
 		
 	}//private void set_listview()
@@ -385,8 +434,16 @@ public class MainActivity extends ListActivity {
 		 * 3. Set file path to view
 		 * 4. Set file duration to progress view
 		 * 		=> Methods.playFile()
+		 * 
+		 * 5. Hightlight the item
 		 * 9. super
 			----------------------------*/
+		
+		// Log
+		Log.d("MainActivity.java" + "["
+				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+				+ "]", "position: " + position + " / " + "id: " + id);
+		
 		
 //		super.onListItemClick(lv, v, position, id);
 		
@@ -395,10 +452,10 @@ public class MainActivity extends ListActivity {
 		 * 		1. Recording?
 		 * 		2. Play
 			----------------------------*/
-		// Log
-		Log.d("MainActivity.java" + "["
-				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-				+ "]", (String) lv.getItemAtPosition(position));
+//		// Log
+//		Log.d("MainActivity.java" + "["
+//				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//				+ "]", (String) lv.getItemAtPosition(position));
 		
 		/*----------------------------
 		 * 1.1. Recording?
@@ -419,7 +476,9 @@ public class MainActivity extends ListActivity {
 		 * 1.2. Play
 			----------------------------*/
 //		String currentFileName = (String) lv.getItemAtPosition(position);
-		currentFileName = (String) lv.getItemAtPosition(position);
+//		currentFileName = (String) lv.getItemAtPosition(position);
+		
+		currentFileName = ((FileItem) lv.getItemAtPosition(position)).getFile_name();
 		
 //		Methods.playFile(this, (String) lv.getItemAtPosition(position));
 		Methods.playFile(this, currentFileName);
@@ -461,7 +520,82 @@ public class MainActivity extends ListActivity {
 		 * 4. Set file duration to progress view
 			----------------------------*/
 		
+		/*----------------------------
+		 * 5. Hightlight the item
+		 * 		1. Prefrences registered?
+		 * 		2. If yes, change the backgrounds => Prev, current
+		 * 		3. Set a new prefs value
+			----------------------------*/
+		/*----------------------------
+		 * 1. Prefrences registered?
+			----------------------------*/
+		SharedPreferences prefs = 
+					getSharedPreferences(PREFS_HIGHLIGHT, MODE_PRIVATE);
+
+		int prev_position = prefs.getInt(PREFS_HIGHLIGHT, -1);
 		
+		if (prev_position == -1) {
+			
+			v.setBackgroundColor(Color.BLUE);
+			
+		} else {//if (prev_position == -1)
+			
+			// Log
+			Log.d("MainActivity.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "prev_position: " + prev_position);
+			
+			
+			View prev_view = lv.getChildAt(prev_position);
+			
+			// Log
+			Log.d("MainActivity.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "lv.getChildCount(): " + lv.getChildCount());
+			
+			
+			if (prev_view != null) {
+				
+				prev_view.setBackgroundColor(Color.BLACK);
+				
+			} else {//if (prev_view != null)
+				
+				// Log
+				Log.d("MainActivity.java"
+						+ "["
+						+ Thread.currentThread().getStackTrace()[2]
+								.getLineNumber() + "]", "prev_view == null");
+				
+			}//if (prev_view != null)
+			
+			
+			v.setBackgroundColor(Color.BLUE);
+			
+		}//if (prev_position == -1)
+		
+		//
+//		adapter.notifyDataSetChanged();
+		flAdapter.notifyDataSetChanged();
+		
+		// Log
+		Log.d("MainActivity.java" + "["
+				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+				+ "]", "Adapter notified");
+		
+		
+		/*----------------------------
+		 * 3. Set a new prefs value
+			----------------------------*/
+		SharedPreferences.Editor editor = prefs.edit();
+		
+		editor.putInt(PREFS_HIGHLIGHT, position);
+		
+		editor.commit();
+		
+		//
+//		v.setBackgroundColor(Color.BLUE);
+		
+//		currentFileName
 		
 		/*----------------------------
 		 * 9. super
