@@ -118,11 +118,11 @@ public class ButtonOnClickListener implements OnClickListener {
 				
 			} else if (MainActivity.play_mode == Methods.ButtonModes.PLAY) {//if (MainActivity.pla)
 
-				MainActivity.play_mode = Methods.ButtonModes.READY;
-				MainActivity.pause_mode = Methods.ButtonModes.FREEZE;
-				MainActivity.rec_mode = Methods.ButtonModes.READY;
-				
-				Methods.update_buttonImages(actv);
+//				MainActivity.play_mode = Methods.ButtonModes.READY;
+//				MainActivity.pause_mode = Methods.ButtonModes.FREEZE;
+//				MainActivity.rec_mode = Methods.ButtonModes.READY;
+//				
+//				Methods.update_buttonImages(actv);
 				
 				Methods.stopPlayer(actv);
 				

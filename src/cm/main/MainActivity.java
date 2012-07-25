@@ -117,16 +117,24 @@ public class MainActivity extends ListActivity {
 			----------------------------*/
 		mp = new MediaPlayer();
 		
-		mp.setOnCompletionListener(new OnCompletionListener(){
-
-			@Override
-			public void onCompletion(MediaPlayer mp) {
-				
-				Methods.stopPlayer(MainActivity.this);
-				
-			}//public void onCompletion(MediaPlayer mp)
-			
-		});//public void onCompletion(MediaPlayer mp)
+//		mp.setOnCompletionListener(new OnCompletionListener(){
+//
+//			@Override
+//			public void onCompletion(MediaPlayer mp) {
+//				
+//				Methods.stopPlayer(MainActivity.this);
+//				
+//				// debug
+//				Toast.makeText(MainActivity.this, "Complete", 2000).show();
+//			}//public void onCompletion(MediaPlayer mp)
+//			
+//		});//public void onCompletion(MediaPlayer mp)
+		
+		// Log
+		Log.d("MainActivity.java" + "["
+				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+				+ "]", "OnCompletionListener => Set");
+		
 		
 		//debug
 //		test1_setProgress2TextView();

@@ -93,19 +93,19 @@ public class FileListAdapter extends ArrayAdapter<FileItem>{
 			 * 2. Set hightlight
 				----------------------------*/
 			
-			// Log
-			Log.d("MainActivity.java" + "["
-					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-					+ "]", "prev_position: " + prev_position);
-			
-			
-//			View prev_view = lv.getChildAt(prev_position);
-			FileItem fi_prev = getItem(prev_position);
-			
-			// Log
-			Log.d("FileListAdapter.java" + "["
-					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-					+ "]", "fi_prev.getFile_name(): " + fi_prev.getFile_name());
+//			// Log
+//			Log.d("FileListAdapter.java" + "["
+//					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//					+ "]", "prev_position: " + prev_position);
+//			
+//			
+////			View prev_view = lv.getChildAt(prev_position);
+//			FileItem fi_prev = getItem(prev_position);
+//			
+//			// Log
+//			Log.d("FileListAdapter.java" + "["
+//					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+//					+ "]", "fi_prev.getFile_name(): " + fi_prev.getFile_name());
 			
 			/*----------------------------
 			 * 3.3.2. Set hightlight

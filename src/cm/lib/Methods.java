@@ -25,6 +25,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -706,6 +707,22 @@ public class Methods {
 			----------------------------*/
 		MainActivity.mp = new MediaPlayer();
 		
+		MainActivity.mp.setOnCompletionListener(
+							new Methods().new MPOnCompletionListener(actv));
+		
+//		MainActivity.mp.setOnCompletionListener(new OnCompletionListener(){
+//
+//			@Override
+//			public void onCompletion(MediaPlayer mp) {
+//				
+//				Methods.stopPlayer(actv);
+//				
+//				// debug
+//				Toast.makeText(actv, "Complete", 2000).show();
+//			}//public void onCompletion(MediaPlayer mp)
+//			
+//		});//public void onCompletion(MediaPlayer mp)
+
 		/*----------------------------
 		 * 3.2. Set data source
 			----------------------------*/
@@ -910,9 +927,22 @@ public class Methods {
 	public static void  stopPlayer(Activity actv) {
 		/*----------------------------
 		 * Steps
-		 * 1. Stop and release
+		 * 0. Update buttons
+		 * 1. Stop and release (=> Stop only. No release)
 		 * 1-2. Stop timer
 		 * 2. Prepare
+			----------------------------*/
+		/*----------------------------
+		 * 0. Update buttons
+			----------------------------*/
+		MainActivity.play_mode = Methods.ButtonModes.READY;
+		MainActivity.pause_mode = Methods.ButtonModes.FREEZE;
+		MainActivity.rec_mode = Methods.ButtonModes.READY;
+		
+		Methods.update_buttonImages(actv);
+		
+		/*----------------------------
+		 * 1. Stop and release
 			----------------------------*/
 		if (MainActivity.mp != null && MainActivity.mp.isPlaying()) {
 			MainActivity.mp.stop();
@@ -1032,4 +1062,27 @@ public class Methods {
 		
 	}//public static void setValue(int value)
 
+	class MPOnCompletionListener implements OnCompletionListener {
+
+		//
+		Activity actv;
+		
+		public MPOnCompletionListener(Activity actv) {
+			
+			this.actv = actv;
+			
+		}
+		
+		@Override
+		public void onCompletion(MediaPlayer mp) {
+			// TODO 自動生成されたメソッド・スタブ
+			Methods.stopPlayer(actv);
+			
+			// debug
+			Toast.makeText(actv, "Complete", 2000).show();
+			
+		}
+		
+	}//class MPOnCompletionListener implements OnCompletionListener
+	
 }//public class Methods
