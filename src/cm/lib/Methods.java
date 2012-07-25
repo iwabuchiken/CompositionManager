@@ -984,7 +984,7 @@ public class Methods {
 		
 	}//class MPOnCompletionListener implements OnCompletionListener
 
-	public static void refreshMainDB(Activity actv) {
+	public static boolean refreshMainDB(Activity actv) {
 		// Log
 		Log.d("Methods.java" + "["
 				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
@@ -1023,6 +1023,10 @@ public class Methods {
 		boolean res = dbu.tableExists(wdb, DBUtils.mainTableName);
 		
 		if (res == false) {
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "テーブルを作ります");
 			
 			res = dbu.createTable(
 								wdb, 
@@ -1032,30 +1036,97 @@ public class Methods {
 			
 			if (res == false) {
 				
-				// debug
-				Toast.makeText(actv, "テーブルを作れませんでした", 2000).show();
+//				// debug
+//				Toast.makeText(actv, "テーブルを作れませんでした", 2000).show();
+				// Log
+				Log.d("Methods.java" + "["
+						+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+						+ "]", "テーブルを作れませんでした");
 				
 				wdb.close();
 				
-				return;
+				return false;
 				
 			} else {//if (res == false)
 				
-				// debug
-				Toast.makeText(
-						actv, "テーブルをつくりました: " + DBUtils.mainTableName, 2000).show();
+//				// debug
+//				Toast.makeText(
+//						actv, "テーブルをつくりました: " + DBUtils.mainTableName, 2000).show();
+				// Log
+				Log.d("Methods.java" + "["
+						+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+						+ "]", "テーブルを作りました");
 				
 			}//if (res == false)
+			
+		} else {//if (res == false)
+			
+//			// debug
+//			Toast.makeText(
+//					actv, "テーブルはすでにあります: " + DBUtils.mainTableName, 2000).show();
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "テーブルはすでにあります");
 			
 		}//if (res == false)
 		
 		/*----------------------------
 		 * 3. Prepare data
 			----------------------------*/
+		List<FileItem> fileItems = prepare_FileItemList(wdb);
+
+		if (fileItems == null) {
+			
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "fileItems == null");
+			
+			return false;
+			
+		}//if (fileItems == null)
 		
+		/*----------------------------
+		 * 4. Insert data into db
+			----------------------------*/
+		// Log
+		Log.d("Methods.java" + "["
+				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+				+ "]", "fileItems.size(): " + fileItems.size());
+		
+		
+		for (FileItem fileItem : fileItems) {
+			
+			storeFileItem2DB(wdb, dbu, DBUtils.mainTableName, fileItem);
+			
+		}
+		
+		/*----------------------------
+		 * 9. Close db
+			----------------------------*/
+		wdb.close();
+		
+		/*----------------------------
+		 * 10. Return
+			----------------------------*/
+		return true;
+		
+	}//public static boolean refreshMainDB(Activity actv)
+
+	private static void storeFileItem2DB(SQLiteDatabase wdb, DBUtils dbu,
+			String tableName, FileItem fileItem) {
+		/*----------------------------
+		 * Steps
+		 * 
+			----------------------------*/
+		
+		
+		
+	}//private static void storeFileItem2DB
+
+	private static List<FileItem> prepare_FileItemList(SQLiteDatabase wdb) {
 		File[] files = new File(MainActivity.rootDir).listFiles();
-		
-		List<String> file_names = new ArrayList<String>();
 		
 		List<FileItem> fileItems = new ArrayList<FileItem>();
 		
@@ -1067,6 +1138,7 @@ public class Methods {
 			 * 2. Duration
 			 * 3. Instatiate FileItem object
 			 * 4. Add to list
+			 * 5. Return
 				----------------------------*/
 			
 			
@@ -1074,6 +1146,8 @@ public class Methods {
 			
 			String file_name = file.getName();
 			String file_path = file.getAbsolutePath();
+			
+			long duration = Methods.getDuration(file_path);
 			
 			long date_added = file.lastModified();
 			long date_modified = file.lastModified();
@@ -1083,144 +1157,6 @@ public class Methods {
 			
 			String located_at = DBUtils.mainTableName;
 			
-			/*----------------------------
-			 * 2. Duration
-			 * 		1. temp_mp
-			 * 		2. Set source
-			 * 		2-1. Prepare
-			 * 		2-2. Get duration
-			 * 		2-3. Release temp_mp
-			 * 
-			 * 		3. Prepare	=> NOP
-			 * 		4. Start			=> NOP
-				----------------------------*/
-			MediaPlayer temp_mp = new MediaPlayer();
-			
-			// Log
-			Log.d("Methods.java" + "["
-					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-					+ "]", "MediaPlayer: Instantiated");
-			
-			try {
-				
-				temp_mp.setDataSource(file_path);
-				
-				// Log
-				Log.d("Methods.java" + "["
-						+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-						+ "]", "MediaPlayer: Data source set");
-				
-			} catch (IllegalArgumentException e) {
-				
-				// Log
-				Log.d("Methods.java"
-						+ "["
-						+ Thread.currentThread().getStackTrace()[2]
-								.getLineNumber() + "]", "Exception: " + e.toString());
-				
-				wdb.close();
-				
-				return;
-				
-			} catch (IllegalStateException e) {
-				// Log
-				Log.d("Methods.java"
-						+ "["
-						+ Thread.currentThread().getStackTrace()[2]
-								.getLineNumber() + "]", "Exception: " + e.toString());
-				
-				wdb.close();
-				
-				return;
-				
-			} catch (IOException e) {
-				// Log
-				Log.d("Methods.java"
-						+ "["
-						+ Thread.currentThread().getStackTrace()[2]
-								.getLineNumber() + "]", "Exception: " + e.toString());
-				
-				wdb.close();
-				
-				return;
-				
-			}//try
-			
-			/*----------------------------
-			 * 2.2-1. Prepare
-				----------------------------*/
-			try {
-				
-				temp_mp.prepare();
-				
-			} catch (IllegalStateException e) {
-				// Log
-				Log.d("Methods.java"
-						+ "["
-						+ Thread.currentThread().getStackTrace()[2]
-								.getLineNumber() + "]", "Exception: " + e.toString());
-				
-				wdb.close();
-				
-				return;
-				
-			} catch (IOException e) {
-				// Log
-				Log.d("Methods.java"
-						+ "["
-						+ Thread.currentThread().getStackTrace()[2]
-								.getLineNumber() + "]", "Exception: " + e.toString());
-				
-				wdb.close();
-				
-				return;
-				
-			}//try
-
-			/*----------------------------
-			 * 2.2-2. Get duration
-				----------------------------*/
-			long duration = temp_mp.getDuration();
-			
-			/*----------------------------
-			 * 2.2-3. Release temp_mp
-				----------------------------*/
-			temp_mp.reset();
-			temp_mp.release();
-			temp_mp = null;
-			
-//			/*----------------------------
-//			 * 2.3. Prepare
-//				----------------------------*/
-//			try {
-//				temp_mp.prepare();
-//			} catch (IllegalStateException e) {
-//				// Log
-//				Log.d("Methods.java"
-//						+ "["
-//						+ Thread.currentThread().getStackTrace()[2]
-//								.getLineNumber() + "]", "Exception: " + e.toString());
-//				
-//				wdb.close();
-//				
-//				return;
-//				
-//			} catch (IOException e) {
-//				// Log
-//				Log.d("Methods.java"
-//						+ "["
-//						+ Thread.currentThread().getStackTrace()[2]
-//								.getLineNumber() + "]", "Exception: " + e.toString());
-//				
-//				wdb.close();
-//				
-//				return;
-//				
-//			}//try
-			
-			/*----------------------------
-			 * 2.4. Start
-				----------------------------*/
 			/*----------------------------
 			 * 3. Instatiate FileItem object
 			 * 4. Add to list
@@ -1235,19 +1171,132 @@ public class Methods {
 		}//for (File file : files)
 
 		/*----------------------------
-		 * 4. Insert data into db
+		 * 5. Return
 			----------------------------*/
-		// Log
-		Log.d("Methods.java" + "["
-				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-				+ "]", "fileItems.size(): " + fileItems.size());
+		return fileItems;
 		
+	}//private static List<FileItem> prepare_FileItemList(SQLiteDatabase wdb)
+	
+	private static long getDuration(String file_path) {
+		/*----------------------------
+		 * 2. Duration
+		 * 		1. temp_mp
+		 * 		2. Set source
+		 * 		2-1. Prepare
+		 * 		2-2. Get duration
+		 * 		2-3. Release temp_mp
+		 * 
+		 * 		3. Prepare	=> NOP
+		 * 		4. Start			=> NOP
+			----------------------------*/
+		MediaPlayer temp_mp = new MediaPlayer();
+		
+		try {
+			
+			temp_mp.setDataSource(file_path);
+			
+		} catch (IllegalArgumentException e) {
+			
+			// Log
+			Log.d("Methods.java"
+					+ "["
+					+ Thread.currentThread().getStackTrace()[2]
+							.getLineNumber() + "]", "Exception: " + e.toString());
+			
+			return -1;
+			
+		} catch (IllegalStateException e) {
+			// Log
+			Log.d("Methods.java"
+					+ "["
+					+ Thread.currentThread().getStackTrace()[2]
+							.getLineNumber() + "]", "Exception: " + e.toString());
+			
+			return -1;
+			
+		} catch (IOException e) {
+			// Log
+			Log.d("Methods.java"
+					+ "["
+					+ Thread.currentThread().getStackTrace()[2]
+							.getLineNumber() + "]", "Exception: " + e.toString());
+			
+			return -1;
+			
+		}//try
 		
 		/*----------------------------
-		 * 9. Close db
+		 * 2.2-1. Prepare
 			----------------------------*/
-		wdb.close();
+		try {
+			
+			temp_mp.prepare();
+			
+		} catch (IllegalStateException e) {
+			// Log
+			Log.d("Methods.java"
+					+ "["
+					+ Thread.currentThread().getStackTrace()[2]
+							.getLineNumber() + "]", "Exception: " + e.toString());
+			
+			return -1;
+			
+		} catch (IOException e) {
+			// Log
+			Log.d("Methods.java"
+					+ "["
+					+ Thread.currentThread().getStackTrace()[2]
+							.getLineNumber() + "]", "Exception: " + e.toString());
+			
+			return -1;
+			
+		}//try
+
+		/*----------------------------
+		 * 2.2-2. Get duration
+			----------------------------*/
+		long duration = temp_mp.getDuration();
 		
-	}//public static void refreshMainDB(Activity actv)
-	
+		/*----------------------------
+		 * 2.2-3. Release temp_mp
+			----------------------------*/
+		temp_mp.reset();
+		temp_mp.release();
+		temp_mp = null;
+		
+		return duration;
+		
+	}//private static long getDuration(String file_path)
+
+	public static boolean dropTable(Activity actv, String tableName) {
+		DBUtils dbu = new DBUtils(actv, DBUtils.dbName);
+		
+		//
+		SQLiteDatabase wdb = dbu.getWritableDatabase();
+		
+		boolean res = dbu.dropTable(actv, wdb, tableName);
+		
+		if (res == false) {
+
+			Toast.makeText(actv, "Drop table => Failed", 2000)
+			.show();
+			
+			wdb.close();
+			
+			return false;
+			
+		} else {//if (res == false)
+
+			Toast.makeText(actv, "Table dropped: " + tableName, 2000)
+			.show();
+			
+			wdb.close();
+			
+			return true;
+			
+		}//if (res == false)
+		
+
+	}//public static boolean dropTable(Activity actv, String tableName)
+
 }//public class Methods

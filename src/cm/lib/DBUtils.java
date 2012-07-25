@@ -36,7 +36,7 @@ public class DBUtils extends SQLiteOpenHelper{
 	 // DB name
 	final static String dbName = "CM.db";
 	
-	final static String mainTableName = "main_table";
+	public final static String mainTableName = "main_table";
 	
 	// Activity
 	Activity activity;
@@ -60,7 +60,8 @@ public class DBUtils extends SQLiteOpenHelper{
 	};
 	
 	public static final String[] types_main_table = {
-		"TEXT", "TEXT", 
+//		"TEXT", "TEXT", 
+		"TEXT UNIQUE", "TEXT",
 		"INTEGER", 
 		"INTEGER", "INTEGER",
 		"TEXT", "TEXT",

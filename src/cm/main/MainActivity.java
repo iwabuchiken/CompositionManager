@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 
 import cm.lib.ButtonOnClickListener;
 import cm.lib.ButtonOnTouchListener;
+import cm.lib.DBUtils;
 import cm.lib.Methods;
 import android.app.Activity;
 import android.app.ListActivity;
@@ -97,17 +98,17 @@ public class MainActivity extends ListActivity {
         
         initial_setup();
         
+//        drop_table(DBUtils.mainTableName);
+        
 //        set_listeners();
         
-//        //debug
-//        // Log
-//		Log.d("MainActivity.java" + "["
-//				+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-//				+ "]", Environment.getExternalStorageDirectory().getAbsolutePath());
-		
-        
-        
     }//public void onCreate(Bundle savedInstanceState)
+
+	private void drop_table(String table_name) {
+		
+		Methods.dropTable(this, table_name);
+		
+	}//private void drop_table(String table_name)
 
 	private void initial_setup() {
 		/*----------------------------
@@ -688,54 +689,6 @@ public class MainActivity extends ListActivity {
 		
 		
 	}//class ProgressThread extends Thread
-	
-	
-//	private void play_file(String fileName) {
-//		/*----------------------------
-//		 * Steps
-//		 * 1.
-//			----------------------------*/
-//		String filePath = new File(rootDir, fileName).getAbsolutePath();
-//		
-//		try {
-//			mp.setDataSource(filePath);
-//			
-//			mp.prepare();
-//			
-//			mp.start();
-//			
-//		} catch (IllegalArgumentException e) {
-//			
-//			// Log
-//			Log.d("MainActivity.java" + "["
-//					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-//					+ "]", "Exception: " + e.toString());
-//			
-//			// debug
-//			Toast.makeText(MainActivity.this, "Exception", 2000).show();
-//			
-//		} catch (IllegalStateException e) {
-//			
-//			// Log
-//			Log.d("MainActivity.java" + "["
-//					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-//					+ "]", "Exception: " + e.toString());
-//
-//			// debug
-//			Toast.makeText(MainActivity.this, "Exception", 2000).show();
-//			
-//		} catch (IOException e) {
-//			// Log
-//			Log.d("MainActivity.java" + "["
-//					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
-//					+ "]", "Exception: " + e.toString());
-//
-//			// debug
-//			Toast.makeText(MainActivity.this, "Exception", 2000).show();
-//			
-//		}//try
-//		
-//	}//private void play_file(String fileName)
 
 	public static void setValue(int value) {
 		
@@ -854,7 +807,11 @@ public class MainActivity extends ListActivity {
 
 			vib.vibrate(Methods.vibLength_click);
 			
-			Methods.refreshMainDB(this);
+//			Methods.refreshMainDB(this);
+			
+			RefreshDBTask task_ = new RefreshDBTask(this);
+			
+			task_.execute("Start");
 			
 			break;
 			
