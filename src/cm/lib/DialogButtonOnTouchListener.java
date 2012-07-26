@@ -35,10 +35,11 @@ public class DialogButtonOnTouchListener implements OnTouchListener {
 		switch (event.getActionMasked()) {
 		case MotionEvent.ACTION_DOWN:
 				switch (tag_name) {
+				
+				case dlg_generic_dismiss:
+				case dlg_add_memos_add:
 					//
-					
-					//
-//					v.setBackgroundColor(Color.GRAY);
+					v.setBackgroundColor(Color.GRAY);
 					
 					
 				}//switch (tag_name)
@@ -46,9 +47,11 @@ public class DialogButtonOnTouchListener implements OnTouchListener {
 			
 		case MotionEvent.ACTION_UP:
 			switch (tag_name) {
-				//
+
+			case dlg_generic_dismiss:
+			case dlg_add_memos_add:
 					//
-//					v.setBackgroundColor(Color.WHITE);
+					v.setBackgroundColor(Color.WHITE);
 					
 				}//switch (tag_name)
 			break;//case MotionEvent.ACTION_UP:

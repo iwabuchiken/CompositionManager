@@ -1,6 +1,9 @@
 package cm.lib;
 
 import cm.lib.Methods.DialogTags;
+import cm.main.FileItem;
+import cm.main.R;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -18,6 +21,7 @@ public class DialogOnItemClickListener implements OnItemClickListener {
 	Activity actv;
 	Dialog dlg;
 	Dialog dlg2;
+	FileItem fi;
 	
 	//
 	Vibrator vib;
@@ -34,35 +38,57 @@ public class DialogOnItemClickListener implements OnItemClickListener {
 		
 	}//public DialogOnItemClickListener(Activity actv, Dialog dlg)
 
-	public DialogOnItemClickListener(Activity actv, Dialog dlg, Methods.DialogTags dlgTag) {
-		// 
+	public DialogOnItemClickListener(Activity actv, Dialog dlg, FileItem fi) {
+
 		this.actv = actv;
 		this.dlg = dlg;
-		this.dlgTag = dlgTag;
+		this.fi = fi;
 		
-		//
 		vib = (Vibrator) actv.getSystemService(Context.VIBRATOR_SERVICE);
 		
-	}//public DialogOnItemClickListener(Activity actv, Dialog dlg)
-
-	public DialogOnItemClickListener(Activity actv, 
-												Dialog dlg, Dialog dlg2,
-												Methods.DialogTags dlgTag) {
-		// TODO 自動生成されたコンストラクター・スタブ
-		this.actv = actv;
-		this.dlg = dlg;
-		this.dlgTag = dlgTag;
-		this.dlg2 = dlg2;
-		
-		//
-		vib = (Vibrator) actv.getSystemService(actv.VIBRATOR_SERVICE);
-
-		
-		
-	}
+	}//public DialogOnItemClickListener(Activity actv, Dialog dlg, FileItem fi)
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+		/*----------------------------
+		 * Steps
+		 * 1. Get tag
+		 * 2. Vibrate
+		 * 3. Switching
+			----------------------------*/
+		
+		Methods.DialogOnItemClickTags tag = (Methods.DialogOnItemClickTags) parent.getTag();
+		
+		vib.vibrate(Methods.vibLength_click);
+		
+		/*----------------------------
+		 * 3. Switching
+			----------------------------*/
+		switch (tag) {
+		
+		case dlg_item_menu:
+			/*----------------------------
+			 * Steps
+			 * 1. 
+				----------------------------*/
+			String item = (String) parent.getItemAtPosition(position);
+			
+			if (item.equals(actv.getString(R.string.dlg_item_menu_item_add_memo))) {
+				
+				dlg.dismiss();
+				
+				Methods.dlg_addMemo(actv, fi);
+				
+			} else if (item.equals(actv.getString(R.string.dlg_item_menu_item_move))) {
+				
+			} else if (item.equals(actv.getString(R.string.dlg_item_menu_item_delete))) {
+				
+			}//if (item.equals(actv.getString(R.string.)))
+			
+			
+			break;
+		
+		}//switch (tag)
 		
 	}//public void onItemClick(AdapterView<?> parent, View v, int position, long id)
 }

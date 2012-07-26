@@ -54,7 +54,14 @@ public class Methods {
 	static int tempRecordNum = 20;
 	
 	public static enum DialogTags {
+		// Generics
+		dlg_generic_dismiss, dlg_generic_dismiss_second_dialog,
 		
+		// dlg_item_menu.xml
+		dlg_item_menu,
+
+		// dlg_add_memos.xml
+		dlg_add_memos, dlg_add_memos_add,
 		
 	}//public static enum DialogTags
 	
@@ -82,6 +89,20 @@ public class Methods {
 		// Rec
 		REC,
 	}
+
+	public static enum LongClickTags {
+		// MainActivity.java
+		main_activity_list,
+		
+		
+	}//public static enum LongClickTags
+
+	public static enum DialogOnItemClickTags {
+		
+		// dlg_item_menu.xml
+		dlg_item_menu,
+		
+	}//public static enum DialogOnItemClickListener
 	
 	//
 	public static final int vibLength_click = 35;
@@ -369,8 +390,13 @@ public class Methods {
 		
 	}//public static Dialog dlg_template_okCancel_2_dialogues()
 
-	public static Dialog dlg_template_cancel(Activity actv, int layoutId, int titleStringId,
-											int cancelButtonId, DialogTags cancelTag) {
+	public static Dialog dlg_template_cancel(
+										// Activity, layout
+										Activity actv, int layoutId,
+										// Title
+										int titleStringId,
+										// Cancel button, DialogTags => Cancel
+										int cancelButtonId, DialogTags cancelTag) {
 		/*----------------------------
 		* Steps
 		* 1. Set up
@@ -1528,5 +1554,115 @@ public class Methods {
 				c.getString(8)		// located_at
 				);
 	}//private static FileItem convert_cursor2FileItem(Cursor c)
+
+	public static void dlg_item_menu(Activity actv, FileItem fi) {
+		/*----------------------------
+		 * Steps
+		 * 1. Get a generic dialog
+		 * 2. Prepare data
+		 * 3. Prepare adapter
+		 * 
+		 * 4. Set data to adapter
+		 * 5. Set adapter to the list
+		 * 5-1. Listener to the view
+		 *
+		 * 6. Show dialog
+			----------------------------*/
+		/*----------------------------
+		 * 1. Get a generic dialog
+			----------------------------*/
+		Dialog dlg = dlg_template_cancel(
+						// Activity actv, int layoutId,
+						actv, R.layout.dlg_item_menu,
+						// Title
+						R.string.generic_tv_menu, 
+						// Cancel button, DialogTags => Cancel
+						R.id.dlg_item_menu_bt_cancel, DialogTags.dlg_generic_dismiss);
+		
+		/*----------------------------
+		 * 2. Prepare data
+			----------------------------*/
+		List<String> itemList = new ArrayList<String>();
+		
+		itemList.add(actv.getString(R.string.dlg_item_menu_item_add_memo));
+		itemList.add(actv.getString(R.string.dlg_item_menu_item_move));
+		itemList.add(actv.getString(R.string.dlg_item_menu_item_delete));
+		
+		/*----------------------------
+		 * 3. Prepare adapter
+		 * 4. Set data to adapter
+			----------------------------*/
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+						actv,
+						android.R.layout.simple_list_item_1, 
+						itemList
+				);
+
+		/*----------------------------
+		 * 5. Set adapter to the list
+			----------------------------*/
+		ListView lv = (ListView) dlg.findViewById(R.id.dlg_item_menu_lv);
+		
+		lv.setAdapter(adapter);
+		
+		
+		/*----------------------------
+		 * 5-1. Listener to the view
+			----------------------------*/
+		lv.setTag(Methods.DialogOnItemClickTags.dlg_item_menu);
+		
+		lv.setOnItemClickListener(
+						new DialogOnItemClickListener(
+								actv, 
+								dlg, 
+								fi));
+		
+		/*----------------------------
+		 * 6. Show dialog
+			----------------------------*/
+		dlg.show();
+		
+		
+	}//public static void dlg_thumb_actv_item_menu(Activity actv, ThumbnailItem ti)
+
+	public static void dlg_addMemo(Activity actv, FileItem fi) {
+		/*----------------------------
+		 * Steps
+		 * 1. Dialog
+		 * 2. "Add" button
+		 * 9. Show
+			----------------------------*/
+		Dialog dlg = dlg_template_okCancel(
+								actv, R.layout.dlg_add_memos, 
+								R.string.dlg_item_menu_item_title,
+								R.id.dlg_add_memos_bt_add, R.id.dlg_add_memos_cancel, 
+								DialogTags.dlg_add_memos_add, DialogTags.dlg_generic_dismiss);
+		
+		/*----------------------------
+		 * 2. "Add" button
+		 * 		1. Touch
+		 * 		2. Click
+			----------------------------*/
+		Button bt_add = (Button) dlg.findViewById(R.id.dlg_add_memos_bt_add);
+		
+		bt_add.setTag(Methods.DialogTags.dlg_add_memos_add);
+		
+		/*----------------------------
+		 * 2.1. Touch
+			----------------------------*/
+		bt_add.setOnTouchListener(new DialogButtonOnTouchListener(actv));
+		
+		/*----------------------------
+		 * 2.2. Click
+			----------------------------*/
+		bt_add.setOnClickListener(new DialogButtonOnClickListener(actv, fi));
+		
+		/*----------------------------
+		 * 9. Show
+			----------------------------*/
+		dlg.show();
+		
+		
+	}//public static void dlg_addMemo(Activity actv, FileItem fi)
 
 }//public class Methods

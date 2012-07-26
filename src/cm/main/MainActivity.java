@@ -1,3 +1,4 @@
+
 package cm.main;
 
 import java.io.File;
@@ -12,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 
 import cm.lib.ButtonOnClickListener;
 import cm.lib.ButtonOnTouchListener;
+import cm.lib.CustomOnItemLongClickListener;
 import cm.lib.DBUtils;
 import cm.lib.Methods;
 import android.app.Activity;
@@ -246,6 +248,8 @@ public class MainActivity extends ListActivity {
 		 * 2. Click
 		 * 
 		 * 3. SeekBar
+		 * 
+		 * 4. ListView => LongClick
 			----------------------------*/
 		/*----------------------------
 		 * 1. Touch
@@ -352,8 +356,8 @@ public class MainActivity extends ListActivity {
 				}//if (fromUser)
 //				tv_progress.setText(String.valueOf(progress));
 				
-			}
-
+			}//public void onProgressChanged
+			
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
 				// TODO 自動生成されたメソッド・スタブ
@@ -369,7 +373,14 @@ public class MainActivity extends ListActivity {
 				
 		});//sb.setOnSeekBarChangeListener
 
+		/*----------------------------
+		 * 4. ListView => LongClick
+			----------------------------*/
+		ListView lv = this.getListView();
 		
+		lv.setTag(Methods.LongClickTags.main_activity_list);
+		
+		lv.setOnItemLongClickListener(new CustomOnItemLongClickListener(this));
 	}//private void set_listeners()
 
 	private void setup_buttons() {

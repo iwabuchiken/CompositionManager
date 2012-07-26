@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import cm.main.FileItem;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Vibrator;
@@ -64,11 +66,27 @@ public class CustomOnItemLongClickListener implements OnItemLongClickListener {
 										AdapterView<?> parent, View v,
 										int position, long id) {
 		//
-		Methods.ItemTags itemTag = (Methods.ItemTags) parent.getTag();
+//		Methods.ItemTags itemTag = (Methods.ItemTags) parent.getTag();
+		Methods.LongClickTags tag = (Methods.LongClickTags) parent.getTag();
 		
 		//
 //		vib.vibrate(400);
 		vib.vibrate(40);
+		
+		switch (tag) {
+		
+		case main_activity_list:
+			/*----------------------------
+			 * Steps
+			 * 1. Get item
+				----------------------------*/
+			FileItem fi = (FileItem) parent.getItemAtPosition(position);
+			
+			Methods.dlg_item_menu(actv, fi);
+			
+			break;
+		
+		}//switch (tag)
 		
 		
 		return false;
