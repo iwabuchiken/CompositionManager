@@ -12,5 +12,13 @@
 	        >
 	        
 	    </item>
-	    
+
+       	<item 
+	        android:id="@+id/main_opt_menu_folder_trees" 
+	        android:title="@string/main_opt_menu_folder_trees" 
+	        android:icon="@drawable/cm_main_actv_opt_menu_folder_tree_50x50"
+	        >
+	        
+	    </item>
+       	
 </menu>

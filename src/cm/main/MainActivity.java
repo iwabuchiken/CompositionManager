@@ -18,6 +18,7 @@ import cm.lib.DBUtils;
 import cm.lib.Methods;
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -861,6 +862,19 @@ public class MainActivity extends ListActivity {
 			Methods.dlg_register_patterns(this);
 			
 			break;
+			
+		case R.id.main_opt_menu_folder_trees://-----------------------------------------------
+			
+			vib.vibrate(Methods.vibLength_click);
+			
+			Intent i = new Intent();
+			
+			i.setClass(this, FolderTreeActivity.class);
+			
+			startActivity(i);
+			
+			break;// case R.id.main_opt_menu_folder_trees
+			
 		}//switch (item.getItemId())
 		
 		return super.onOptionsItemSelected(item);

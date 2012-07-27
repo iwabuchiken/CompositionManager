@@ -8,6 +8,7 @@
 	    <string name="main_opt_menu_refresh_db">DBリフレッシュ</string>
 	    <string name="main_opt_menu_db_activity">データベース</string>
 	    <string name="main_opt_menu_add_patterns">定型句登録</string>
+	    <string name="main_opt_menu_folder_trees">フォルダ・ツリー</string>
     
     <!-- Generic items -->
 	    <string name="generic_bt_ok">OK</string>
