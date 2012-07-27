@@ -36,26 +36,46 @@ public class DBUtils extends SQLiteOpenHelper{
 	/*****************************************************************
 	 * Class fields
 	 *****************************************************************/
+	/*----------------------------
+	 * 1. DB-related
+	 * 2. Table names, folder names
+	 * 3. Activity, context
+	 * 4. Columns, types
+		----------------------------*/
+	/*----------------------------
+	 * 1. DB-related
+		----------------------------*/
+	// Database
+	SQLiteDatabase db = null;
+	
 	 // DB name
 	final static String dbName = "CM.db";
 	
+	/*----------------------------
+	 * 2. Table names, folder names
+		----------------------------*/
+	// Table names
 	public final static String mainTableName = "main_table";
 	
 	public static String currentTableName = null;
 	
+	public static final String memoPatternTable = "memo_patterns";
+
+	public static String baseDirName = "";
+	
+	/*----------------------------
+	 * 3. Activity, context
+		----------------------------*/
 	// Activity
 	Activity activity;
 	
 	//
 	Context context;
 	
-	// Database
-	SQLiteDatabase db = null;
-
-	//
-	public static String baseDirName = "";
-
-	// Columns for "main_table"
+	/*----------------------------
+	 * 4. Columns, types
+		----------------------------*/
+	// Main table
 	public static final String[] cols_main_table = {
 		"file_name", "file_path", 
 		"duration", 
@@ -72,6 +92,11 @@ public class DBUtils extends SQLiteOpenHelper{
 		"TEXT", "TEXT",
 		"TEXT"
 	};
+	
+	// Memo patterns
+	static String[] cols_memo_patterns = {"word", "table_name"};
+	
+	static String[] types_memo_patterns = {"TEXT", "TEXT"};
 	
 	/*****************************************************************
 	 * Constructor

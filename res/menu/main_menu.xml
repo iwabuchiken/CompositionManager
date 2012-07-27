@@ -4,5 +4,13 @@
     <!-- main_menu.xml -->
 	    <item android:id="@+id/main_opt_menu_refresh_db" android:title="@string/main_opt_menu_refresh_db" android:icon="@drawable/ifm8_opt_menu_refresh_db"></item>
 	    <item android:id="@+id/main_opt_menu_db_activity" android:title="@string/main_opt_menu_db_activity" android:icon="@drawable/ifm8_opt_menu_db_activity"></item>
-    
+
+       	<item 
+	        android:id="@+id/main_opt_menu_add_patterns" 
+	        android:title="@string/main_opt_menu_add_patterns" 
+	        android:icon="@drawable/ifm8_image_actv_opt_menu_add_pattern_30x30_v3"
+	        >
+	        
+	    </item>
+	    
 </menu>

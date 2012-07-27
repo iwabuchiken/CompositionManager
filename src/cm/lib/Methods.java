@@ -61,7 +61,11 @@ public class Methods {
 		dlg_item_menu,
 
 		// dlg_add_memos.xml
-		dlg_add_memos, dlg_add_memos_add,
+		dlg_add_memos, dlg_add_memos_add, dlg_add_memos_gv,
+
+		// dlg_register_patterns.xml
+		dlg_register_patterns, dlg_register_patterns_register,
+		
 		
 	}//public static enum DialogTags
 	
@@ -101,6 +105,9 @@ public class Methods {
 		
 		// dlg_item_menu.xml
 		dlg_item_menu,
+		
+		// dlg_register_patterns.xml
+		dlg_register_patterns, dlg_register_patterns_gv,
 		
 	}//public static enum DialogOnItemClickListener
 	
@@ -1631,6 +1638,7 @@ public class Methods {
 		 * 1. Dialog
 		 * 2. "Add" button
 		 * 3. EditText => Show memo if there is any
+		 * 4. Grid view
 		 * 
 		 * 9. Show
 			----------------------------*/
@@ -1674,6 +1682,77 @@ public class Methods {
 			
 		}//if (condition)
 			
+		/*----------------------------
+		 * 4. GridView
+		 * 	1. Set up db
+		 * 	2. Get cursor
+		 * 	3. Get list
+		 * 	4. Adapter
+		 * 	5. Set adapter to view
+		 * 6. Set listener
+			----------------------------*/
+		/*----------------------------
+		 * 4.1. Set up db
+			----------------------------*/
+		GridView gv = (GridView) dlg.findViewById(R.id.dlg_add_memos_gv);
+		
+		DBUtils dbu = new DBUtils(actv, DBUtils.dbName);
+		
+		SQLiteDatabase rdb = dbu.getReadableDatabase();
+
+		/*----------------------------
+		 * 4.2. Get cursor
+			----------------------------*/
+		String sql = "SELECT * FROM " + DBUtils.memoPatternTable + " ORDER BY word ASC";
+		
+		Cursor c = rdb.rawQuery(sql, null);
+		
+		actv.startManagingCursor(c);
+		
+		c.moveToFirst();
+		
+		/*----------------------------
+		 * 4.3. Get list
+			----------------------------*/
+		List<String> patternList = new ArrayList<String>();
+		
+		if (c.getCount() > 0) {
+			
+			for (int i = 0; i < c.getCount(); i++) {
+				
+				patternList.add(c.getString(1));
+				
+				c.moveToNext();
+				
+			}//for (int i = 0; i < patternList.size(); i++)
+			
+		}//if (c.getCount() > 0)
+		
+		
+		Collections.sort(patternList);
+
+		/*----------------------------
+		 * 4.4. Adapter
+			----------------------------*/
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+										actv,
+//										R.layout.dlg_add_memos,
+										R.layout.add_memo_grid_view,
+										patternList
+										);
+		
+		/*----------------------------
+		 * 4.5. Set adapter to view
+			----------------------------*/
+		gv.setAdapter(adapter);
+		
+		/*----------------------------
+		 * 4.6. Set listener
+			----------------------------*/
+		gv.setTag(Methods.DialogOnItemClickTags.dlg_register_patterns_gv);
+		
+		gv.setOnItemClickListener(new DialogOnItemClickListener(actv, dlg));
+		
 		
 		/*----------------------------
 		 * 9. Show
@@ -1838,5 +1917,194 @@ public class Methods {
 		wdb.close();
 		
 	}//private static void insertDataToDB()
+
+	public static void dlg_register_patterns(Activity actv) {
+		/*----------------------------
+		 * Steps
+		 * 1. Dialog
+		 * 9. Show
+			----------------------------*/
+		Dialog dlg = dlg_template_okCancel(
+					actv, R.layout.dlg_register_patterns, R.string.dlg_register_patterns_title,
+				R.id.dlg_register_patterns_btn_create, R.id.dlg_register_patterns_btn_cancel, 
+				DialogTags.dlg_register_patterns_register, DialogTags.dlg_generic_dismiss);
+		
+		
+		/*----------------------------
+		 * 9. Show
+			----------------------------*/
+		dlg.show();
+	}//public static void dlg_register_patterns(Activity actv)
+
+	public static void dlg_register_patterns_isInputEmpty(Activity actv, Dialog dlg) {
+		/*----------------------------
+		 * Steps
+		 * 1. Get views
+		 * 2. Prepare data
+		 * 3. Register data
+		 * 4. Dismiss dialog
+			----------------------------*/
+		
+		// Get views
+		EditText et_word = (EditText) dlg.findViewById(R.id.dlg_register_patterns_et_word);
+		EditText et_table_name = 
+					(EditText) dlg.findViewById(R.id.dlg_register_patterns_et_table_name);
+		
+		if (et_word.getText().length() == 0) {
+			// debug
+			Toast.makeText(actv, "Œê‹å‚ð“ü‚ê‚Ä‚­‚¾‚³‚¢", 3000).show();
+			
+			return;
+		}//if (et_column_name.getText().length() == 0)
+		
+		/*----------------------------
+		 * 2. Prepare data
+			----------------------------*/
+		//
+		String word = et_word.getText().toString();
+		String table_name = et_table_name.getText().toString();
+		
+		/*----------------------------
+		 * 3. Register data
+			----------------------------*/
+		boolean result = insertDataIntoDB(actv, DBUtils.memoPatternTable, 
+								DBUtils.cols_memo_patterns, new String[]{word, table_name},
+								DBUtils.types_memo_patterns);
+		
+		/*----------------------------
+		 * 4. Dismiss dialog
+			----------------------------*/
+		if (result == true) {
+		
+			Toast.makeText(actv, "’èŒ^‹å‚ð“o˜^‚µ‚Ü‚µ‚½: " + word, 2000)
+			.show();
+			
+			dlg.dismiss();
+			
+		} else {//if (result == true)
+			
+			Toast.makeText(actv, "’èŒ^‹å‚ð“o˜^‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½: " + word, 2000)
+			.show();
+			
+		}//if (result == true)
+		
+		
+	}//public static void dlg_register_patterns_isInputEmpty(Activity actv, Dialog dlg)
+
+	private static boolean insertDataIntoDB(
+			Activity actv, String tableName, String[] colNames, String[] values, String[] colTypes) {
+		/*----------------------------
+		* Steps
+		* 1. Set up db
+		* 1-2. Table exists?
+		* 2. Insert data
+		* 3. Show message
+		* 4. Close db
+		----------------------------*/
+		/*----------------------------
+		* 1. Set up db
+		----------------------------*/
+		DBUtils dbu = new DBUtils(actv, DBUtils.dbName);
+		
+		SQLiteDatabase wdb = dbu.getWritableDatabase();
+		
+		/*----------------------------
+		 * 1-2. Table exists?
+			----------------------------*/
+		boolean result = dbu.tableExists(wdb, tableName);
+		
+		// If doesn't exist...
+		if (result == false) {
+			// Create one
+			result = dbu.createTable(wdb, tableName, colNames, colTypes);
+			
+			if (result == true) {
+				
+				// Log
+				Log.d("Methods.java"
+						+ "["
+						+ Thread.currentThread().getStackTrace()[2]
+								.getLineNumber() + "]", "Table created: " + tableName);
+				
+				
+			} else {//if (result == true)
+
+				// Log
+				Log.d("Methods.java"
+						+ "["
+						+ Thread.currentThread().getStackTrace()[2]
+								.getLineNumber() + "]", "Create table => Failed: " + tableName);
+				
+				wdb.close();
+				
+				return false;
+				
+			}//if (result == true)
+			
+			
+		}//if (result == false)
+		
+		/*----------------------------
+		* 2. Insert data
+		----------------------------*/
+		result = false;
+		
+		try {
+			
+			result = dbu.insertData(wdb, tableName, colNames, values);
+			
+		} catch (Exception e) {
+			// Log
+			Log.d("Methods.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "Exception: " + e.toString());
+			
+		}
+		
+		/*----------------------------
+		* 3. Show message
+		----------------------------*/
+		if (result == true) {
+		
+//			// debug
+//			Toast.makeText(actv, "Data stored", 2000).show();
+			// Log
+			Log.d("Methods.java"
+					+ "["
+					+ Thread.currentThread().getStackTrace()[2]
+							.getLineNumber() + "]", "dbu.insertData => true");
+			
+			
+			/*----------------------------
+			* 4. Close db
+			----------------------------*/
+			wdb.close();
+			
+			return true;
+		
+		} else {//if (result == true)
+		
+//			// debug
+//			Toast.makeText(actv, "Store data => Failed", 200).show();
+			
+			// Log
+			Log.d("Methods.java"
+					+ "["
+					+ Thread.currentThread().getStackTrace()[2]
+							.getLineNumber() + "]", "dbu.insertData => false");
+			/*----------------------------
+			* 4. Close db
+			----------------------------*/
+			wdb.close();
+			
+			return false;
+		
+		}//if (result == true)
+		
+		/*----------------------------
+		* 4. Close db
+		----------------------------*/
+		
+	}//private static int insertDataIntoDB()
 
 }//public class Methods

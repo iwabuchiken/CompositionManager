@@ -103,7 +103,14 @@ public class DialogButtonOnClickListener implements OnClickListener {
 //			Toast.makeText(actv, et.getText().toString(), 2000).show();
 			
 			break;
+
+		case dlg_register_patterns_register://---------------------------------------
 			
+			vib.vibrate(Methods.vibLength_click);
+			
+			Methods.dlg_register_patterns_isInputEmpty(actv, dlg);
+			
+			break;
 		default: // ----------------------------------------------------
 			break;
 		}//switch (tag_name)

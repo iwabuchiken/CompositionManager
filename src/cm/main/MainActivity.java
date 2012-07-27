@@ -854,7 +854,13 @@ public class MainActivity extends ListActivity {
 			vib.vibrate(Methods.vibLength_click);
 			break;
 			
+		case R.id.main_opt_menu_add_patterns://-----------------------------------------------
 			
+			vib.vibrate(Methods.vibLength_click);
+			
+			Methods.dlg_register_patterns(this);
+			
+			break;
 		}//switch (item.getItemId())
 		
 		return super.onOptionsItemSelected(item);
