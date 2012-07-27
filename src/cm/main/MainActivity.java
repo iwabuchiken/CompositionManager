@@ -78,9 +78,9 @@ public class MainActivity extends ListActivity {
 
 	//
 	static ArrayAdapter<String> adapter;
-	static FileListAdapter flAdapter;
+	public static FileListAdapter flAdapter;
 	
-	static List<FileItem> fiList;
+	public static List<FileItem> fiList;
 
 	
 	
@@ -93,11 +93,32 @@ public class MainActivity extends ListActivity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	/*----------------------------
+		 * Steps
+		 * 1. super
+		 * 2. Instantiate vars
+		 * 3. initial_setup()
+			----------------------------*/
+		
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+        /*----------------------------
+		 * 2. Instantiate vars
+		 * 		1. vib
+		 * 		2. DBUtils#currentTableName
+			----------------------------*/
+		
         vib = (Vibrator) this.getSystemService(this.VIBRATOR_SERVICE);
         
+        /*----------------------------
+		 * 2.2. DBUtils#currentTableName
+			----------------------------*/
+		DBUtils.currentTableName = DBUtils.mainTableName;
+        
+        /*----------------------------
+		 * 3. initial_setup()
+			----------------------------*/
         initial_setup();
         
 //        drop_table(DBUtils.mainTableName);

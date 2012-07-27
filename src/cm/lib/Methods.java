@@ -1630,6 +1630,8 @@ public class Methods {
 		 * Steps
 		 * 1. Dialog
 		 * 2. "Add" button
+		 * 3. EditText => Show memo if there is any
+		 * 
 		 * 9. Show
 			----------------------------*/
 		Dialog dlg = dlg_template_okCancel(
@@ -1655,7 +1657,23 @@ public class Methods {
 		/*----------------------------
 		 * 2.2. Click
 			----------------------------*/
-		bt_add.setOnClickListener(new DialogButtonOnClickListener(actv, fi));
+		bt_add.setOnClickListener(new DialogButtonOnClickListener(actv, dlg, fi));
+		
+		/*----------------------------
+		 * 3. EditText => Show memo if there is any
+			----------------------------*/
+		if (fi.getMemos() != null) {
+			
+			String memos = fi.getMemos();
+			
+			EditText et = (EditText) dlg.findViewById(R.id.dlg_add_memos_et_content);
+			
+			et.setText(memos);
+			
+			et.setSelection(memos.length());
+			
+		}//if (condition)
+			
 		
 		/*----------------------------
 		 * 9. Show
@@ -1664,5 +1682,161 @@ public class Methods {
 		
 		
 	}//public static void dlg_addMemo(Activity actv, FileItem fi)
+
+	public static void addMemo(Activity actv, Dialog dlg, FileItem fi) {
+		/*----------------------------
+		 * Steps
+		 * 1. Get text
+		 * 2. Is empty?
+		 * 3. Prepare data
+		 * 
+		 * 
+		 * 4. Record data
+		 * 5. If successful => Notify adapter
+		 * 6. Dismiss dialog
+			----------------------------*/
+		EditText et = (EditText) dlg.findViewById(R.id.dlg_add_memos_et_content);
+		
+		String content = et.getText().toString();
+		
+		/*----------------------------
+		 * 2. Is empty?
+			----------------------------*/
+		if (content.length() < 1) {
+			
+			// debug
+			Toast.makeText(actv, "“ü—Í‚ª‚ ‚è‚Ü‚¹‚ñ", 2000).show();
+			
+			return;
+			
+		}//if (content.length() < 1)
+		
+		/*----------------------------
+		 * 3. Prepare data
+			----------------------------*/
+		fi.setMemos(content);
+		
+		/*----------------------------
+		 * 4. Record data
+			----------------------------*/
+//		Methods.insertDataToDB(actv, DBUtils.currentTableName, fi);
+		boolean res = Methods.updateData(actv, DBUtils.currentTableName, fi);
+		
+		/*----------------------------
+		 * 5. If successful => Notify adapter
+			----------------------------*/
+		if (res == false) {
+			
+			Toast.makeText(actv, "Can't add memo", 2000).show();
+			
+			return;
+			
+		}//if (res == false)
+		
+		MainActivity.flAdapter.notifyDataSetChanged();
+		
+		/*----------------------------
+		 * 6. Dismiss dialog
+			----------------------------*/
+		dlg.dismiss();
+		
+	}//public static void addMemo(Activity actv, Dialog dlg, FileItem fi)
+
+	/****************************************
+	 *
+	 * 
+	 * <Caller> 
+	 * 1. Methods.addMemo(Activity actv, Dialog dlg, FileItem fi)
+	 * 
+	 * <Desc> 1. <Params> 1.
+	 * 
+	 * <Return> 1.
+	 * 
+	 * <Steps> 1.
+	 * @return 
+	 ****************************************/
+	private static boolean updateData(Activity actv, String tableName, FileItem fi) {
+		/*----------------------------
+		 * Steps
+		 * 1. db setup
+		 * 2. Update data
+		 * 
+		 * 3. Notify adapter
+		 * 
+		 * 9. Close db
+			----------------------------*/
+		/*----------------------------
+		 * 1. db setup
+			----------------------------*/
+		DBUtils dbu = new DBUtils(actv, DBUtils.dbName);
+		
+		//
+		SQLiteDatabase wdb = dbu.getWritableDatabase();
+		
+		/*----------------------------
+		 * 2. Update data
+			----------------------------*/
+		boolean res = dbu.updateData_memos(wdb, tableName, fi);
+		
+		// debug
+		if (res == true) {
+			
+			Toast.makeText(actv, "Data updated", 2000).show();
+			
+			/*----------------------------
+			 * 9. Close db
+				----------------------------*/
+			wdb.close();
+
+			return true;
+			
+		} else {//if (res == true)
+			
+			Toast.makeText(actv, "Data updat => Failed", 2000).show();
+			
+			/*----------------------------
+			 * 9. Close db
+				----------------------------*/
+			wdb.close();
+			
+			return false;
+			
+		}//if (res == true)
+		
+		
+//		/*----------------------------
+//		 * 9. Close db
+//			----------------------------*/
+//		wdb.close();
+		
+	}//private static void updateData(Activity actv, String tableName, FileItem fi)
+
+	private static void insertDataToDB(Activity actv, String tableName, FileItem fi) {
+		/*----------------------------
+		 * Steps
+		 * 1. db setup
+		 * 2. Insert data
+		 * 
+		 * 9. Close db
+			----------------------------*/
+		/*----------------------------
+		 * 1. db setup
+			----------------------------*/
+		DBUtils dbu = new DBUtils(actv, DBUtils.dbName);
+		
+		//
+		SQLiteDatabase wdb = dbu.getWritableDatabase();
+		
+		/*----------------------------
+		 * 2. Insert data
+			----------------------------*/
+		
+		
+		/*----------------------------
+		 * 9. Close db
+			----------------------------*/
+		wdb.close();
+		
+	}//private static void insertDataToDB()
 
 }//public class Methods

@@ -2,7 +2,10 @@ package cm.lib;
 
 
 
+
 import java.util.ArrayList;
+
+import cm.main.FileItem;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -37,6 +40,8 @@ public class DBUtils extends SQLiteOpenHelper{
 	final static String dbName = "CM.db";
 	
 	public final static String mainTableName = "main_table";
+	
+	public static String currentTableName = null;
 	
 	// Activity
 	Activity activity;
@@ -438,7 +443,68 @@ public class DBUtils extends SQLiteOpenHelper{
 		//return false;
 		
 	}//public insertData(String tableName, String[] columnNames, String[] values)
-	
+
+	public boolean updateData(SQLiteDatabase wdb, String tableName, FileItem fi) {
+		/*----------------------------
+		* 1. Insert data
+		----------------------------*/
+		try {
+			// Start transaction
+//			wdb.beginTransaction();
+			
+			// ContentValues
+			ContentValues val = new ContentValues();
+			
+			// Put values
+			val.put(DBUtils.cols_main_table[0], fi.getFile_name());		// file_name
+			val.put(DBUtils.cols_main_table[1], fi.getFile_path());		// file_path
+			
+			val.put(DBUtils.cols_main_table[2], fi.getDuration());		// duration
+			
+			val.put(DBUtils.cols_main_table[3], fi.getDate_added());		// date_added
+			val.put(DBUtils.cols_main_table[4], fi.getDate_modified());		// date_modified
+			
+			val.put(DBUtils.cols_main_table[5], fi.getFile_info());		// file_info
+			val.put(DBUtils.cols_main_table[6], fi.getMemos());		// memos
+			
+			val.put(DBUtils.cols_main_table[7], fi.getLocated_at());		// located_at
+			
+//			for (int i = 0; i < columnNames.length; i++) {
+//			val.put(columnNames[i], values[i]);
+//			}//for (int i = 0; i < columnNames.length; i++)
+			
+			// Insert data
+//			wdb.insert(tableName, null, val);
+//			wdb.update(tableName, val, cols_main_table[0] + " = '?'", new String[]{fi.getFile_name()});
+			wdb.update(tableName, val, cols_main_table[0] + " = " + fi.getFile_name(), null);
+			
+			// Set as successful
+//			wdb.setTransactionSuccessful();
+			
+			// End transaction
+//			wdb.endTransaction();
+			
+			// Log
+			Log.d("DBUtils.java" + "["
+					+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+					+ "]", "Update => Done");
+			
+			return true;
+		
+		} catch (Exception e) {
+			// Log
+			Log.e("DBUtils.java" + "["
+			+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+			+ "]", "Exception! => " + e.toString());
+			
+			return false;
+		}//try
+		
+		////debug
+		//return false;
+		
+	}//public insertData(String tableName, String[] columnNames, String[] values)
+
 	public boolean deleteData(Activity actv, SQLiteDatabase db, String tableName, long file_id) {
 		/*----------------------------
 		 * Steps
@@ -549,6 +615,66 @@ public class DBUtils extends SQLiteOpenHelper{
 		return c.getCount() > 0 ? true : false;
 		
 	}//public static boolean isInTable
+
+	/****************************************
+	 *
+	 * 
+	 * <Caller> 
+	 * 1. Methods.updateData(Activity actv, String tableName, FileItem fi)
+	 * 
+	 * 
+	 * <Desc> 1. <Params> 1.
+	 * 
+	 * <Return> 1.
+	 * 
+	 * <Steps> 1.
+	 ****************************************/
+	public boolean updateData_memos(SQLiteDatabase wdb, 
+																String tableName, FileItem fi) {
+		/*----------------------------
+		* Steps
+		* 1. 
+		----------------------------*/
+		String sql = "UPDATE " + tableName + " SET " + 
+			
+			"file_name='" + fi.getFile_name() + "', " +
+			"file_path='" + fi.getFile_path() + "', " +
+			
+			"duration='" + fi.getDuration() + "', " +
+			"date_added='" + String.valueOf(fi.getDate_added()) + "', " +
+			"date_modified='" + String.valueOf(fi.getDate_modified()) + "', " +
+			
+			"file_info='" + fi.getFile_info() + "', " +
+			"memos='" + fi.getMemos() + "', " +
+			
+			"located_at='" + fi.getLocated_at() + "'" +
+			
+			" WHERE file_name = '" + fi.getFile_name() + "'";
+
+		try {
+		
+			wdb.execSQL(sql);
+			
+			// Log
+			Log.d("DBUtils.java" + "["
+			+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+			+ "]", "sql => Done: " + sql);
+			
+//			Methods.toastAndLog(actv, "Data updated", 2000);
+			
+			return true;
+		
+		
+		} catch (SQLException e) {
+			// Log
+			Log.d("DBUtils.java" + "["
+			+ Thread.currentThread().getStackTrace()[2].getLineNumber()
+			+ "]", "Exception => " + e.toString() + " / " + "sql: " + sql);
+			
+			return false;
+		}
+		
+	}//public void updateData_memos
 
 }//public class DBUtils
 
